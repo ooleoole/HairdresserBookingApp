@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Domain.Entities.Junctions;
 
 namespace Domain.Entities
 {
@@ -15,7 +16,7 @@ namespace Domain.Entities
         [Required]
         public Address Address { get; set; }
 
-        public IEnumerable<Costumer> Costumers { get; set; }
+        public IEnumerable<CompanyCostumer> Costumers { get; set; }
 
     }
 }

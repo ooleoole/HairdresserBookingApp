@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using Domain.Entities.Junctions;
 using Domain.Enums;
 
 namespace Domain.Entities
@@ -19,6 +21,8 @@ namespace Domain.Entities
         public string Notes { get; set; }
         [Required]
         public Address Address { get; set; }
+
+        public IEnumerable<CompanyCostumer> Companies { get; set; }
 
     }
 }
