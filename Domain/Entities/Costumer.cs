@@ -9,8 +9,9 @@ namespace Domain.Entities
     {
 
         public int Id { get; set; }
+        public string FirstName { get; set; }
         [Required, MinLength(2), MaxLength(36)]
-        public string Name { get; set; }
+        public string LastName { get; set; }
         [Required, EmailAddress]
         public string Email { get; set; }
         [Required, MinLength(9), MaxLength(11)]
@@ -19,6 +20,8 @@ namespace Domain.Entities
         public Gender Gender { get; set; }
         [MaxLength(256)]
         public string Notes { get; set; }
+        [Required]
+        public int AddressId { get; set; }
         [Required]
         public Address Address { get; set; }
 
