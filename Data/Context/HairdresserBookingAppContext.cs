@@ -30,7 +30,8 @@ namespace Data.Context
             modelBuilder.Entity<Skill>().HasAlternateKey(s => s.Type);
             modelBuilder.Entity<Employee>().HasKey(e => new { e.CompanyId, e.HairDresserId, e.EmploymentNumber });
             modelBuilder.Entity<MasteredSkill>().HasKey(m => new { m.HairDresserId, m.SkillId });
-            modelBuilder.Entity<Treatment>().HasAlternateKey(t => new {t.EmployeeId, t.SkillId, t.CompanyId});
+            modelBuilder.Entity<Treatment>().HasAlternateKey(t => new {t.SkillId, t.CompanyId });
+            
 
         }
     }
