@@ -20,12 +20,13 @@ namespace Domain.Entities
         public Gender Gender { get; set; }
         [MaxLength(256)]
         public string Notes { get; set; }
+
         [Required]
         public int AddressId { get; set; }
         [Required]
         public Address Address { get; set; }
 
-        public IEnumerable<CompanyCostumer> Companies { get; set; }
+        public IEnumerable<CompanyCostumer> Companies { get; set; }= new List<CompanyCostumer>();
 
     }
 }

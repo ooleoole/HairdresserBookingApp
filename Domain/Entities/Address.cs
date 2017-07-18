@@ -18,9 +18,9 @@ namespace Domain.Entities
         [MaxLength(96)]
         public string Co { get; set; }
 
-        public IEnumerable<Company> Companies { get; set; }
-        public IEnumerable<Costumer> Costumers { get; set; }
-        public IEnumerable<Employee> Employees { get; set; }
+        public IEnumerable<Company> Companies { get; set; } = new List<Company>();
+        public IEnumerable<Costumer> Costumers { get; set; } = new List<Costumer>();
+        public IEnumerable<Employee> Employees { get; set; } = new List<Employee>();
 
     }
 }
