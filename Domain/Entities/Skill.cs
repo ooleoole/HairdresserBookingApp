@@ -10,7 +10,9 @@ namespace Domain.Entities
         [Required, MinLength(2), MaxLength(96)]
         public string Type { get; set; }
 
-        public IEnumerable<MasteredSkill> Masters { get; set; } = new List<MasteredSkill>();
+        [Required]
+        public int MasterId { get; set; }
+        public HairDresser Master { get; set; }
         public IEnumerable<Treatment> Treatments { get; set; } = new List<Treatment>();
     }
 }

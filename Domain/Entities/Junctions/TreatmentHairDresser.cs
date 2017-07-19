@@ -5,13 +5,13 @@ using System.Text;
 
 namespace Domain.Entities.Junctions
 {
-    public class MasteredSkill
+    public class TreatmentHairDresser
     {
         [Required]
         public int HairDresserId { get; set; }
         public HairDresser HairDresser { get; set; }
         [Required]
-        public int SkillId { get; set; }
-        public Skill Skill { get; set; }
+        public int TreastmentId { get; set; }
+        public Treatment Treatment { get; set; }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Domain.Entities.Junctions;
 
 namespace Domain.Entities
 {
@@ -10,14 +12,14 @@ namespace Domain.Entities
         public TimeSpan BaseTime { get; set; }
         [Required]
         public int BasePrice { get; set; }
-       
+        [Required, MinLength(2), MaxLength(96)]
+        public string Type { get; set; }
         [MaxLength(256)]
         public string Notes { get; set; }
-       
 
-        [Required]
-        public int SkillId { get; set; }
-        public Skill Skill { get; set; }
+
+        public IEnumerable<TreatmentHairDresser> Masters { get; set; }
+
         [Required]
         public int CompanyId { get; set; }
         public Company Company { get; set; }

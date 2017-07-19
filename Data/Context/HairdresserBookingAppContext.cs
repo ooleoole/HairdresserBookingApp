@@ -1,5 +1,4 @@
-﻿using Domain;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Domain.Entities.Junctions;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,11 +26,12 @@ namespace Data.Context
             modelBuilder.Entity<Costumer>().HasAlternateKey(c => new { c.FirstName, c.LastName, c.AddressId });
             modelBuilder.Entity<Company>().HasAlternateKey(c => c.Name);
             modelBuilder.Entity<CompanyCostumer>().HasKey(cc => new { cc.CompanyId, cc.CostumerId });
-            modelBuilder.Entity<Skill>().HasAlternateKey(s => s.Type);
+            modelBuilder.Entity<Skill>().HasAlternateKey(s => new { s.Type, s.MasterId });
             modelBuilder.Entity<Employee>().HasKey(e => new { e.CompanyId, e.HairDresserId, e.EmploymentNumber });
-            modelBuilder.Entity<MasteredSkill>().HasKey(m => new { m.HairDresserId, m.SkillId });
-            modelBuilder.Entity<Treatment>().HasAlternateKey(t => new {t.SkillId, t.CompanyId });
-            
+            modelBuilder.Entity<Treatment>().HasAlternateKey(t => new { t.Type, t.CompanyId });
+            modelBuilder.Entity<Booking>().HasAlternateKey(b => new {b.TreatmentId, b.CostumerId, b.DateAndTime});
+            modelBuilder.Entity<Costumer>().HasAlternateKey(e => new {e.Email});
+
 
         }
     }

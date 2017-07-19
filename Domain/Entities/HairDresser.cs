@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Domain.Entities;
 using Domain.Entities.Junctions;
 
-namespace Domain
+namespace Domain.Entities
 {
     public class HairDresser
     {
@@ -20,15 +18,9 @@ namespace Domain
         public string Email { get; set; }
         [Required, MinLength(10), MaxLength(13)]
         public string SocialSecurityNumber { get; set; }
-        [Required]
-        public DateTime WorkingHoursStart { get; set; }
-        [Required]
-        public DateTime WorkingHoursEnd { get; set; }
 
-        
         public Address Address { get; set; }
-        
-        public IEnumerable<MasteredSkill> MasteredSkills { get; set; }
+        public IEnumerable<TreatmentHairDresser> MasteredTreatments { get; set; }
         public IEnumerable<Employee> Employments { get; set; }
     }
 }

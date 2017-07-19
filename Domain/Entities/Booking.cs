@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Entities
@@ -16,6 +17,13 @@ namespace Domain.Entities
         public int ExtraCost { get; set; }
         [MaxLength(256)]
         public string Notes { get; set; }
+        [Required]
+        public int TreatmentId { get; set; }
+        public Treatment Treatment { get; set; }
+        [Required]
+        public int CostumerId { get; set; }
+        public Costumer Costumer { get; set; }
+
 
 
 
