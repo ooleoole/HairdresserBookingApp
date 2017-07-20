@@ -2,18 +2,29 @@
 
 namespace Domain.Entities.ScheduleObjects
 {
-    public class TimeRange
+    public struct TimeRange
     {
-        
-        public DateTime StartTime { get; set; }
-        public DateTime EndTime { get; set; }
 
-        public TimeRange(DateTime startTime, DateTime endTime)
+        public TimeSpan StartTime { get; set; }
+        public TimeSpan EndTime => StartTime + Duration;
+
+        public TimeSpan Duration { get; set; }
+
+        public TimeRange(DateTime startTime, TimeSpan duration)
         {
-            if (startTime < endTime) throw new ArgumentException("end time must be larger then start time");
-
+            StartTime = startTime.TimeOfDay;
+            Duration = duration;
+        }
+        public TimeRange(TimeSpan startTime, TimeSpan duration)
+        {
             StartTime = startTime;
-            EndTime = endTime;
+            Duration = duration;
+        }
+
+
+        public override string ToString()
+        {
+            return $"StartTime: {StartTime.Hours}:{StartTime.Minutes} Duration: {Duration:g}";
         }
     }
 }

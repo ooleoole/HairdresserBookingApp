@@ -5,7 +5,7 @@ namespace Domain.Entities.ScheduleObjects
 {
     public class WeeklyWorkingHours
     {
-        public Dictionary<DayOfWeek, TimeRange> Week { get; set; } = new Dictionary<DayOfWeek, TimeRange>();
+        public Dictionary<DailyWorkingHours, TimeRange> Week { get; set; } = new Dictionary<DailyWorkingHours, TimeRange>();
         public int WeekNumber { get; set; }
 
         public WeeklyWorkingHours(Employee employee)
@@ -18,7 +18,7 @@ namespace Domain.Entities.ScheduleObjects
         {
             for (int i = 0; i < 7; i++)
             {
-                Week.Add((DayOfWeek)i, new TimeRange(employee.WorkingHoursStart, employee.WorkingHoursEnd));
+               
             }
         }
     }
