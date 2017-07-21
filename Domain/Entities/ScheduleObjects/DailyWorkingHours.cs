@@ -21,39 +21,50 @@ namespace Domain.Entities.ScheduleObjects
             ValidateTimeRange(timeRange);
             var timeRangesTemp = TimeRanges.ToList();
 
-
-            for (int i = 0; i < timeRangesTemp.Count; i++)
+            if (CheckIfTimeToAddOverlapsAnyStoredTime(timeRange, timeRangesTemp))
             {
-                var storedTimeRange = TimeRanges.ToList()[i];
-                if (storedTimeRange.Equals(timeRange))
-                    break;
-
-                if (storedTimeRange.EndTime > timeRange.StartTime && storedTimeRange.StartTime <= timeRange.StartTime && storedTimeRange.EndTime <= timeRange.EndTime)
+                for (int i = 0; i < timeRangesTemp.Count; i++)
                 {
-                    timeRange = new TimeRange(storedTimeRange.StartTime, timeRange.Duration);
-                    timeRangesTemp.RemoveAt(i);
+                    var storedTimeRange = timeRangesTemp.ToList()[i];
+
+                    if (storedTimeRange.Equals(timeRange))
+                        return;
+                    //StoredTimeRange  Is bigger then timeRange to Add
+                    if (storedTimeRange.StartTime <= timeRange.StartTime && storedTimeRange.EndTime >= timeRange.EndTime)
+                        return;
+
+                    //TimeRange to add is bigger then storedTimeRange
+                    if (storedTimeRange.StartTime >= timeRange.StartTime && storedTimeRange.EndTime <= timeRange.EndTime)
+                    {
+                        timeRangesTemp.RemoveAt(i);
+                        i--;
+                        continue;
+                    }
+                    if (storedTimeRange.StartTime <= timeRange.StartTime && storedTimeRange.EndTime <= timeRange.EndTime)
+                    {
+                        timeRange = new TimeRange(storedTimeRange.StartTime, timeRange.EndTime - storedTimeRange.StartTime);
+                        timeRangesTemp.RemoveAt(i);
+                    }
+                    else if (storedTimeRange.StartTime >= timeRange.StartTime && storedTimeRange.EndTime >= timeRange.EndTime)
+                    {
+                        timeRange = new TimeRange(timeRange.StartTime, storedTimeRange.EndTime - timeRange.StartTime);
+                        timeRangesTemp.RemoveAt(i);
+                    }
 
                 }
-                else if (timeRange.StartTime <= storedTimeRange.StartTime && timeRange.EndTime <= storedTimeRange.EndTime)
-                {
-                    timeRange = new TimeRange(timeRange.StartTime, storedTimeRange.Duration);
-                    timeRangesTemp.RemoveAt(i);
-                }
-                else if (timeRange.StartTime <= storedTimeRange.StartTime && timeRange.EndTime >= storedTimeRange.EndTime)
-                {
-                    timeRangesTemp.RemoveAt(i);
-                }
 
-               
             }
+
             timeRangesTemp.Add(timeRange);
 
-
-            if (timeRangesTemp.Count == 0)
-                timeRangesTemp.Add(timeRange);
-
-
             TimeRanges = timeRangesTemp;
+        }
+
+        private static bool CheckIfTimeToAddOverlapsAnyStoredTime(TimeRange timeRange, IReadOnlyCollection<TimeRange> timeRangesTemp)
+        {
+            return !(timeRangesTemp.Count == 0 ||
+                     timeRangesTemp.Any(t => t.EndTime < timeRange.StartTime ||
+                                             timeRange.EndTime < t.StartTime));
         }
 
         private static void ValidateTimeRange(TimeRange timeRange)
