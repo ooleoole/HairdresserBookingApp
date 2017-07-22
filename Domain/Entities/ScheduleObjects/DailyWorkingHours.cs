@@ -25,14 +25,14 @@ namespace Domain.Entities.ScheduleObjects
 
 
             if (timeRangesTemp.Count != 0)
-                newTimeRange = ManagePotentialOverlaps(newTimeRange, timeRangesTemp);
+                newTimeRange = MergePotentialOverlaps(newTimeRange, timeRangesTemp);
 
             timeRangesTemp.Add(newTimeRange);
             TimeRanges = timeRangesTemp;
             return this;
         }
 
-        private static TimeRange ManagePotentialOverlaps(TimeRange newTimeRange, IList<TimeRange> timeRangesTemp)
+        private static TimeRange MergePotentialOverlaps(TimeRange newTimeRange, IList<TimeRange> timeRangesTemp)
         {
             for (int i = 0; i < timeRangesTemp.Count; i++)
             {

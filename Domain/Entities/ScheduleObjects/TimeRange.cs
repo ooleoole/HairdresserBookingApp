@@ -22,9 +22,6 @@ namespace Domain.Entities.ScheduleObjects
         }
 
 
-        public override string ToString()
-        {
-            return $"StartTime: {StartTime.Hours}:{StartTime.Minutes} Duration: {Duration:g}";
-        }
+        public override string ToString() => $"StartTime: {StartTime.Hours}:{StartTime.Minutes} Duration: {Duration:g}";
     }
 }
