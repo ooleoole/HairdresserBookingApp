@@ -36,7 +36,7 @@ namespace Domain.Entities.ScheduleObjects
         {
             for (int i = 0; i < timeRangesTemp.Count; i++)
             {
-                var storedTimeRange = timeRangesTemp.ToList()[i];
+                var storedTimeRange = timeRangesTemp[i];
 
 
                 if (TimeRangeToAddStartsBeforeAndEndsAfterStoredTimeRange(newTimeRange, storedTimeRange))
