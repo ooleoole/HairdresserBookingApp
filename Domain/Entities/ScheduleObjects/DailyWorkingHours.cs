@@ -16,56 +16,81 @@ namespace Domain.Entities.ScheduleObjects
             Day = date.DayOfWeek;
         }
 
-        public void AddTimeRange(TimeRange timeRange)
+        public DailyWorkingHours AddTimeRange(TimeRange newTimeRange)
         {
-            ValidateTimeRange(timeRange);
+            ValidateTimeRange(newTimeRange);
             var timeRangesTemp = TimeRanges.ToList();
+            if (CheckIfTimeRangeToAddFitsWithinAnyStoredTimeRange(newTimeRange, timeRangesTemp))
+                return this;
 
-            if (CheckIfTimeToAddOverlapsAnyStoredTime(timeRange, timeRangesTemp))
+
+            if (timeRangesTemp.Count != 0)
+                newTimeRange = ManagePotentialOverlaps(newTimeRange, timeRangesTemp);
+
+            timeRangesTemp.Add(newTimeRange);
+            TimeRanges = timeRangesTemp;
+            return this;
+        }
+
+        private static TimeRange ManagePotentialOverlaps(TimeRange newTimeRange, IList<TimeRange> timeRangesTemp)
+        {
+            for (int i = 0; i < timeRangesTemp.Count; i++)
             {
-                for (int i = 0; i < timeRangesTemp.Count; i++)
+                var storedTimeRange = timeRangesTemp.ToList()[i];
+
+
+                if (TimeRangeToAddStartsBeforeAndEndsAfterStoredTimeRange(newTimeRange, storedTimeRange))
                 {
-                    var storedTimeRange = timeRangesTemp.ToList()[i];
-
-                    if (storedTimeRange.Equals(timeRange))
-                        return;
-                    //StoredTimeRange  Is bigger then timeRange to Add
-                    if (storedTimeRange.StartTime <= timeRange.StartTime && storedTimeRange.EndTime >= timeRange.EndTime)
-                        return;
-
-                    //TimeRange to add is bigger then storedTimeRange
-                    if (storedTimeRange.StartTime >= timeRange.StartTime && storedTimeRange.EndTime <= timeRange.EndTime)
-                    {
-                        timeRangesTemp.RemoveAt(i);
-                        i--;
-                        continue;
-                    }
-                    if (storedTimeRange.StartTime <= timeRange.StartTime && storedTimeRange.EndTime <= timeRange.EndTime)
-                    {
-                        timeRange = new TimeRange(storedTimeRange.StartTime, timeRange.EndTime - storedTimeRange.StartTime);
-                        timeRangesTemp.RemoveAt(i);
-                    }
-                    else if (storedTimeRange.StartTime >= timeRange.StartTime && storedTimeRange.EndTime >= timeRange.EndTime)
-                    {
-                        timeRange = new TimeRange(timeRange.StartTime, storedTimeRange.EndTime - timeRange.StartTime);
-                        timeRangesTemp.RemoveAt(i);
-                    }
+                    timeRangesTemp.RemoveAt(i);
+                    i--;
+                }
+                else if (CheckForOverLapWhereNewTimeRangeStartFirst(newTimeRange, storedTimeRange))
+                {
+                    newTimeRange = MergeTimes(newTimeRange, storedTimeRange);
+                    timeRangesTemp.RemoveAt(i);
+                    i--;
+                }
+                else if (CheckForOverLapWhereStoredTimeRangeStartFirst(newTimeRange, storedTimeRange))
+                {
+                    newTimeRange = MergeTimes(storedTimeRange, newTimeRange);
+                    timeRangesTemp.RemoveAt(i);
+                    i--;
 
                 }
-
             }
-
-            timeRangesTemp.Add(timeRange);
-
-            TimeRanges = timeRangesTemp;
+            return newTimeRange;
         }
 
-        private static bool CheckIfTimeToAddOverlapsAnyStoredTime(TimeRange timeRange, IReadOnlyCollection<TimeRange> timeRangesTemp)
-        {
-            return !(timeRangesTemp.Count == 0 ||
-                     timeRangesTemp.Any(t => t.EndTime < timeRange.StartTime ||
-                                             timeRange.EndTime < t.StartTime));
-        }
+        private static TimeRange MergeTimes(TimeRange start, TimeRange end) => new TimeRange(start.StartTime, end.EndTime - start.StartTime);
+
+        private static bool OverLap(TimeRange lower, TimeRange upper) => lower.EndTime >= upper.StartTime;
+
+        private static bool CheckForOverLapWhereNewTimeRangeStartFirst(TimeRange newTimeRange,
+            TimeRange storedTimeRange) =>
+            NewTimeRangeDoNotStartAfterStoredTimeRange(newTimeRange, storedTimeRange) &&
+            NewTimeRangeDoNotEndAfterStoredTimeRange(newTimeRange, storedTimeRange) &&
+            OverLap(newTimeRange, storedTimeRange);
+
+        private static bool CheckForOverLapWhereStoredTimeRangeStartFirst(TimeRange newTimeRange,
+            TimeRange storedTimeRange) =>
+            !NewTimeRangeDoNotStartAfterStoredTimeRange(newTimeRange, storedTimeRange) &&
+            !NewTimeRangeDoNotEndAfterStoredTimeRange(newTimeRange, storedTimeRange) &&
+            OverLap(storedTimeRange, newTimeRange);
+
+        private static bool NewTimeRangeDoNotStartAfterStoredTimeRange(TimeRange timeRange, TimeRange storedTimeRange) =>
+            storedTimeRange.StartTime >= timeRange.StartTime;
+
+        private static bool NewTimeRangeDoNotEndAfterStoredTimeRange(TimeRange timeRange, TimeRange storedTimeRange) =>
+            storedTimeRange.EndTime >= timeRange.EndTime;
+
+        private static bool TimeRangeToAddStartsBeforeAndEndsAfterStoredTimeRange(TimeRange timeRange, TimeRange storedTimeRange) =>
+            storedTimeRange.StartTime >= timeRange.StartTime &&
+            storedTimeRange.EndTime <= timeRange.EndTime;
+
+        private static bool CheckIfTimeRangeToAddFitsWithinAnyStoredTimeRange(TimeRange timeRange, IEnumerable<TimeRange> timeRangesTemp) =>
+            timeRangesTemp.Any(t => t.StartTime <= timeRange.StartTime &&
+            t.EndTime >= timeRange.EndTime ||
+            t.Equals(timeRange));
 
         private static void ValidateTimeRange(TimeRange timeRange)
         {
@@ -74,9 +99,6 @@ namespace Domain.Entities.ScheduleObjects
                                                       $"The working day must not end after 24:00");
         }
 
-        public override string ToString()
-        {
-            return $"{Date:d} {Day}";
-        }
+        public override string ToString() => $"{Date:d} {Day}";
     }
 }
