@@ -57,10 +57,17 @@ namespace Domain.Entities.ScheduleObjects
                     storedTimeRange.StartTime = timeRange.EndTime;
                     timeRangesTemp[i] = storedTimeRange;
                 }
+                else if (TimeRangeCutsEndOfStoredTimeRange(timeRange, storedTimeRange))
+                {
+                    storedTimeRange.Duration -= (storedTimeRange.EndTime - timeRange.StartTime);
+                    timeRangesTemp[i] = storedTimeRange;
+                }
             }
             TimeRanges = timeRangesTemp;
             return this;
         }
+
+
 
         private static TimeRange MergePotentialOverlaps(TimeRange newTimeRange, IList<TimeRange> timeRangesTemp)
         {
@@ -90,27 +97,36 @@ namespace Domain.Entities.ScheduleObjects
             }
             return newTimeRange;
         }
+        private static bool TimeRangeCutsEndOfStoredTimeRange(TimeRange timeRange,
+            TimeRange storedTimeRange) =>
+            storedTimeRange.EndTime <= timeRange.EndTime &&
+            StoredTimeRangeStartsBeforeTimeRange(timeRange, storedTimeRange);
 
-        private static bool TimeRangeCutsStartOfStoredTimeRange(TimeRange timeRange, TimeRange storedTimeRange) =>
-            storedTimeRange.StartTime == timeRange.StartTime &&
+        private static bool TimeRangeCutsStartOfStoredTimeRange(TimeRange timeRange,
+            TimeRange storedTimeRange) =>
+            storedTimeRange.StartTime >= timeRange.StartTime &&
             TimeRangeEndBeforStoredTimeRange(timeRange, storedTimeRange);
 
 
-        private static bool TimeRangeSplitsStoredTimeRange(TimeRange timeRange, TimeRange storedTimeRange) =>
+        private static bool TimeRangeSplitsStoredTimeRange(TimeRange timeRange,
+            TimeRange storedTimeRange) =>
             StoredTimeRangeStartsBeforeTimeRange(timeRange, storedTimeRange) &&
             TimeRangeEndBeforStoredTimeRange(timeRange, storedTimeRange);
 
-        private static bool StoredTimeRangeStartsBeforeTimeRange(TimeRange timeRange, TimeRange storedTimeRange) =>
+        private static bool StoredTimeRangeStartsBeforeTimeRange(TimeRange timeRange,
+            TimeRange storedTimeRange) =>
             storedTimeRange.StartTime < timeRange.StartTime;
 
-        private static bool TimeRangeEndBeforStoredTimeRange(TimeRange timeRange, TimeRange storedTimeRange)
-        {
-            return timeRange.EndTime < storedTimeRange.EndTime;
-        }
+        private static bool TimeRangeEndBeforStoredTimeRange(TimeRange timeRange,
+            TimeRange storedTimeRange) =>
+            timeRange.EndTime < storedTimeRange.EndTime;
 
-        private static TimeRange MergeTimes(TimeRange start, TimeRange end) => new TimeRange(start.StartTime, end.EndTime - start.StartTime);
+        private static TimeRange MergeTimes(TimeRange start,
+            TimeRange end) =>
+            new TimeRange(start.StartTime, end.EndTime - start.StartTime);
 
-        private static bool OverLap(TimeRange lower, TimeRange upper) => lower.EndTime >= upper.StartTime;
+        private static bool OverLap(TimeRange lower,
+            TimeRange upper) => lower.EndTime >= upper.StartTime;
 
         private static bool CheckForOverLapWhereNewTimeRangeStartFirst(TimeRange newTimeRange,
             TimeRange storedTimeRange) =>
@@ -124,19 +140,23 @@ namespace Domain.Entities.ScheduleObjects
             !NewTimeRangeDoNotEndAfterStoredTimeRange(newTimeRange, storedTimeRange) &&
             OverLap(storedTimeRange, newTimeRange);
 
-        private static bool NewTimeRangeDoNotStartAfterStoredTimeRange(TimeRange timeRange, TimeRange storedTimeRange) =>
+        private static bool NewTimeRangeDoNotStartAfterStoredTimeRange(TimeRange timeRange,
+            TimeRange storedTimeRange) =>
             storedTimeRange.StartTime >= timeRange.StartTime;
 
-        private static bool NewTimeRangeDoNotEndAfterStoredTimeRange(TimeRange timeRange, TimeRange storedTimeRange) =>
+        private static bool NewTimeRangeDoNotEndAfterStoredTimeRange(TimeRange timeRange,
+            TimeRange storedTimeRange) =>
             storedTimeRange.EndTime >= timeRange.EndTime;
 
-        private static bool TimeRangeStartsBeforeAndEndsAfterStoredTimeRange(TimeRange timeRange, TimeRange storedTimeRange) =>
-            storedTimeRange.StartTime >= timeRange.StartTime &&
+        private static bool TimeRangeStartsBeforeAndEndsAfterStoredTimeRange(TimeRange timeRange,
+            TimeRange storedTimeRange) =>
+            NewTimeRangeDoNotStartAfterStoredTimeRange(timeRange, storedTimeRange) &&
             storedTimeRange.EndTime <= timeRange.EndTime;
 
-        private static bool CheckIfTimeRangeToAddFitsWithinAnyStoredTimeRange(TimeRange timeRange, IEnumerable<TimeRange> timeRangesTemp) =>
+        private static bool CheckIfTimeRangeToAddFitsWithinAnyStoredTimeRange(TimeRange timeRange,
+            IEnumerable<TimeRange> timeRangesTemp) =>
             timeRangesTemp.Any(t => t.StartTime <= timeRange.StartTime &&
-            t.EndTime >= timeRange.EndTime ||
+            NewTimeRangeDoNotEndAfterStoredTimeRange(timeRange, t) ||
             t.Equals(timeRange));
 
         private static void ValidateTimeRange(TimeRange timeRange)
