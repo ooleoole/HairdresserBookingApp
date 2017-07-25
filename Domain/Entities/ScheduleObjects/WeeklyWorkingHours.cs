@@ -1,23 +1,24 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Domain.Entities.ScheduleObjects
 {
     public class WeeklyWorkingHours
     {
-        public Dictionary<DailyWorkingHours, TimeRange> Week { get; set; } = new Dictionary<DailyWorkingHours, TimeRange>();
+        public IEnumerable<DailyWorkingHours> Week { get; set; } = new HashSet<DailyWorkingHours>();
         public int WeekNumber { get; set; }
 
-        public WeeklyWorkingHours(Employee employee)
+        public WeeklyWorkingHours(Employee employee, int weekNumber)
         {
             GenerateBaseWeek(employee);
-            
+
         }
 
-        private void GenerateBaseWeek(Employee employee)
+        private void GenerateBaseWeek(Employee employee, params DayOfWeek[] daysOff)
         {
             for (int i = 0; i < 7; i++)
             {
-               
+
             }
         }
     }

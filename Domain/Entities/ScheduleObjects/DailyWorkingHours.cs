@@ -59,7 +59,7 @@ namespace Domain.Entities.ScheduleObjects
                 }
                 else if (TimeRangeCutsEndOfStoredTimeRange(timeRange, storedTimeRange))
                 {
-                    storedTimeRange.Duration -= (storedTimeRange.EndTime - timeRange.StartTime);
+                    storedTimeRange.Duration -= storedTimeRange.EndTime - timeRange.StartTime;
                     timeRangesTemp[i] = storedTimeRange;
                 }
             }
@@ -71,10 +71,10 @@ namespace Domain.Entities.ScheduleObjects
 
         private static TimeRange MergePotentialOverlaps(TimeRange newTimeRange, IList<TimeRange> timeRangesTemp)
         {
+           
             for (var i = 0; i < timeRangesTemp.Count; i++)
             {
                 var storedTimeRange = timeRangesTemp[i];
-
 
                 if (TimeRangeStartsBeforeAndEndsAfterStoredTimeRange(newTimeRange, storedTimeRange))
                 {
@@ -99,12 +99,12 @@ namespace Domain.Entities.ScheduleObjects
         }
         private static bool TimeRangeCutsEndOfStoredTimeRange(TimeRange timeRange,
             TimeRange storedTimeRange) =>
-            storedTimeRange.EndTime <= timeRange.EndTime &&
+            NewTimeRangeDoNotEndAfterStoredTimeRange(timeRange, storedTimeRange) &&
             StoredTimeRangeStartsBeforeTimeRange(timeRange, storedTimeRange);
 
         private static bool TimeRangeCutsStartOfStoredTimeRange(TimeRange timeRange,
             TimeRange storedTimeRange) =>
-            storedTimeRange.StartTime >= timeRange.StartTime &&
+            NewTimeRangeDoNotStartAfterStoredTimeRange(timeRange, storedTimeRange) &&
             TimeRangeEndBeforStoredTimeRange(timeRange, storedTimeRange);
 
 
