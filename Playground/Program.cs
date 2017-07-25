@@ -38,7 +38,7 @@ namespace Playground
             var time6 = new TimeRange(new TimeSpan(3, 0, 0), new TimeSpan(13, 0, 0));
             var time7 = new TimeRange(new TimeSpan(17, 0, 0), new TimeSpan(6, 0, 0));
             workingHours.AddTimeRange(time2).AddTimeRange(time1).AddTimeRange(time3).AddTimeRange(time4).AddTimeRange(time5).AddTimeRange(time6).RemoveTimeRange(time7);
-            workingHours.
+            
             Console.ReadKey();
         }
     }

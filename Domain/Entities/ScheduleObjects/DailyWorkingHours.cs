@@ -10,8 +10,17 @@ namespace Domain.Entities.ScheduleObjects
         public IEnumerable<TimeRange> TimeRanges { get; private set; } = new List<TimeRange>();
         public DayOfWeek Day { get; set; }
 
+        public bool Bookable => TimeRanges.Any();
+
         private DailyWorkingHours() { }
 
+        public DailyWorkingHours Clear()
+        {
+            var timeRangesTemp = TimeRanges.ToList();
+            timeRangesTemp.Clear();
+            TimeRanges = timeRangesTemp;
+            return this;
+        }
         public DailyWorkingHours(DateTime date)
         {
             Date = date.Date;
