@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Domain.ScheduleObjects.Entities;
 
 namespace Domain.Entities.ScheduleObjects
 {
-    public class DailyWorkingHours
+    public class DailyWorkingHours : IDailyWorkingHours
     {
         public DateTime Date { get; set; }
         public IEnumerable<TimeRange> TimeRanges { get; private set; } = new List<TimeRange>();

@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Domain.Interfaces;
 
 namespace Domain.Entities
 {
-    public class Employee
+    public class Employee : IEmployee
     {
         public int EmploymentNumber { get; set; }
         [Required]
