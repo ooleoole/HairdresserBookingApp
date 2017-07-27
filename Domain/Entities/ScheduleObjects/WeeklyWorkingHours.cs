@@ -5,7 +5,7 @@ namespace Domain.Entities.ScheduleObjects
 {
     public class WeeklyWorkingHours
     {
-        public IEnumerable<DailyWorkingHours> Week { get; private set; } = new HashSet<DailyWorkingHours>();
+        public IEnumerable<DateBoundTimeRanges> Week { get; private set; } = new HashSet<DateBoundTimeRanges>();
         public int WeekNumber { get; set; }
 
         public WeeklyWorkingHours(Employee employee, int weekNumber)

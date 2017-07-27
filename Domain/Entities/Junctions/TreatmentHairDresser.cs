@@ -11,7 +11,7 @@ namespace Domain.Entities.Junctions
         public int HairDresserId { get; set; }
         public HairDresser HairDresser { get; set; }
         [Required]
-        public int TreastmentId { get; set; }
+        public int TreatmentId { get; set; }
         public Treatment Treatment { get; set; }
     }
 }

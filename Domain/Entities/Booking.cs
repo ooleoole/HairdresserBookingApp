@@ -1,6 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Domain.Entities.ScheduleObjects;
 
 namespace Domain.Entities
 {
@@ -24,7 +24,8 @@ namespace Domain.Entities
         public int CostumerId { get; set; }
         public Costumer Costumer { get; set; }
 
-
+        public int ScheduleId { get; set; }
+        public Schedule Schedule { get; set; }
 
 
 

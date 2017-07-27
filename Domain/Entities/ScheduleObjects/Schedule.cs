@@ -1,29 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using Domain.Interfaces;
+﻿using System.Collections.Generic;
+using Domain.Entities.Junctions;
 
 namespace Domain.Entities.ScheduleObjects
 {
     public class Schedule
     {
-        public IEnumerable<DailyWorkingHours> AvailableHours { get; private set; } = new HashSet<DailyWorkingHours>();
+        public int Id { get; set; }
+        public IEnumerable<NoneStandardAvailableWorkDay> NoneStandardAvailableHours { get; private set; } = new HashSet<NoneStandardAvailableWorkDay>();
+        //public IEnumerable<DateBoundTimeRanges> DisabledHours { get; private set; } = new HashSet<DateBoundTimeRanges>();
         public IEnumerable<Booking> Bookings { get; private set; } = new HashSet<Booking>();
 
-        private const int BaseDays = 60;
+        public ScheduleBaseSettings ScheduleBaseSettings { get; set; }
+        public int EmployeeId { get; set; }
+        public Employee Employee { get; set; }
+        
 
-        public Schedule(IEmployee employee)
+        public Schedule()
         {
-            GenerateBaseSchedule(employee);
         }
 
-        private void GenerateBaseSchedule(IEmployee employee)
-        {
-
-            //TODO: Schedule settings
-            var startDate = DateTime.Now.Subtract(TimeSpan.FromDays(60/2));
-            for (int i = 0; i < BaseDays; i++)
-            {
-                var dailyWorkingHour= new DailyWorkingHours(startDate);
-            }
-        }
+       
+    }
 }

@@ -1,5 +1,8 @@
-﻿using Domain.Entities;
+﻿using Data.EntityConfigurations;
+using Domain.Entities;
 using Domain.Entities.Junctions;
+using Domain.Entities.ScheduleObjects;
+using Domain.Entities.Wrappers;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.Context
@@ -22,15 +25,21 @@ namespace Data.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<HairDresser>().HasAlternateKey(h => h.SocialSecurityNumber);
+            //modelBuilder.Entity<HairDresser>().HasAlternateKey(h => h.SocialSecurityNumber);
+            MapConfiguration.Map(modelBuilder.Entity<HairDresser>());
             modelBuilder.Entity<Costumer>().HasAlternateKey(c => new { c.FirstName, c.LastName, c.AddressId });
             modelBuilder.Entity<Company>().HasAlternateKey(c => c.Name);
             modelBuilder.Entity<CompanyCostumer>().HasKey(cc => new { cc.CompanyId, cc.CostumerId });
             modelBuilder.Entity<Skill>().HasAlternateKey(s => new { s.Type, s.MasterId });
             modelBuilder.Entity<Employee>().HasKey(e => new { e.CompanyId, e.HairDresserId, e.EmploymentNumber });
             modelBuilder.Entity<Treatment>().HasAlternateKey(t => new { t.Type, t.CompanyId });
-            modelBuilder.Entity<Booking>().HasAlternateKey(b => new {b.TreatmentId, b.CostumerId, b.DateAndTime});
-            modelBuilder.Entity<Costumer>().HasAlternateKey(e => new {e.Email});
+            modelBuilder.Entity<Booking>().HasAlternateKey(b => new { b.TreatmentId, b.CostumerId, b.DateAndTime });
+            modelBuilder.Entity<Costumer>().HasAlternateKey(e => new { e.Email });
+            MapConfiguration.Map(modelBuilder.Entity<NoneStandardAvailableWorkDay>());
+            MapConfiguration.Map(modelBuilder.Entity<DateBoundTimeRanges>());
+            MapConfiguration.Map(modelBuilder.Entity<DayOff>());
+            MapConfiguration.Map(modelBuilder.Entity<TreatmentHairDresser>());
+            MapConfiguration.Map(modelBuilder.Entity<WeekDay>());
 
 
         }

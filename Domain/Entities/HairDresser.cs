@@ -8,9 +8,9 @@ namespace Domain.Entities
     {
 
         public int Id { get; set; }
-        [Required, MinLength(2), MaxLength(36)]
+        [Required, MaxLength(36)]
         public string FirstName { get; set; }
-        [Required, MinLength(2), MaxLength(36)]
+        [Required, MaxLength(36)]
         public string LastName { get; set; }
         [Required, MinLength(9), MaxLength(11)]
         public string PhoneNumber { get; set; }

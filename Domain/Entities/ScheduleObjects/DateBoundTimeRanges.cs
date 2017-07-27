@@ -1,34 +1,41 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Domain.ScheduleObjects.Entities;
+using Domain.Entities.Junctions;
+using Domain.Entities.Wrappers;
+using Domain.Interfaces;
 
 namespace Domain.Entities.ScheduleObjects
 {
-    public class DailyWorkingHours : IDailyWorkingHours
+    public class DateBoundTimeRanges : IDateBoundTimeRanges
     {
+        public int Id { get; set; }
         public DateTime Date { get; set; }
         public IEnumerable<TimeRange> TimeRanges { get; private set; } = new List<TimeRange>();
-        public DayOfWeek Day { get; set; }
+        public WeekDay Day { get; set; }
+
+        public NoneStandardAvailableWorkDay Schedules { get; set; }
+        public int? NoneStandardAvailableWorkDayId { get; set; }
+
 
         public bool Bookable => TimeRanges.Any();
 
-        private DailyWorkingHours() { }
+        private DateBoundTimeRanges() { }
 
-        public DailyWorkingHours Clear()
+        public DateBoundTimeRanges Clear()
         {
             var timeRangesTemp = TimeRanges.ToList();
             timeRangesTemp.Clear();
             TimeRanges = timeRangesTemp;
             return this;
         }
-        public DailyWorkingHours(DateTime date)
+        public DateBoundTimeRanges(DateTime date)
         {
             Date = date.Date;
-            Day = date.DayOfWeek;
+            Day.DayOfWeek = date.DayOfWeek;
         }
 
-        public DailyWorkingHours AddTimeRange(TimeRange newTimeRange)
+        public DateBoundTimeRanges AddTimeRange(TimeRange newTimeRange)
         {
             ValidateTimeRange(newTimeRange);
             var timeRangesTemp = TimeRanges.ToList();
@@ -43,7 +50,7 @@ namespace Domain.Entities.ScheduleObjects
             return this;
         }
 
-        public DailyWorkingHours RemoveTimeRange(TimeRange timeRange)
+        public DateBoundTimeRanges RemoveTimeRange(TimeRange timeRange)
         {
             var timeRangesTemp = TimeRanges.ToList();
             for (var i = 0; i < timeRangesTemp.Count; i++)
@@ -81,7 +88,7 @@ namespace Domain.Entities.ScheduleObjects
 
         private static TimeRange MergePotentialOverlaps(TimeRange newTimeRange, IList<TimeRange> timeRangesTemp)
         {
-           
+
             for (var i = 0; i < timeRangesTemp.Count; i++)
             {
                 var storedTimeRange = timeRangesTemp[i];
