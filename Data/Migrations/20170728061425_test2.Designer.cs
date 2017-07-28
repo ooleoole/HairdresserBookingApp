@@ -9,8 +9,8 @@ using Domain.Enums;
 namespace Data.Migrations
 {
     [DbContext(typeof(HairdresserBookingAppContext))]
-    [Migration("20170727210023_test3")]
-    partial class test3
+    [Migration("20170728061425_test2")]
+    partial class test2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -227,11 +227,11 @@ namespace Data.Migrations
 
                     b.Property<int>("WeekDayId");
 
-                    b.Property<int?>("WeekDayDayOfWeek");
+                    b.Property<int?>("WeekDayDay");
 
                     b.HasKey("ScheduleBaseSettingsId", "WeekDayId");
 
-                    b.HasIndex("WeekDayDayOfWeek");
+                    b.HasIndex("WeekDayDay");
 
                     b.ToTable("DayOff");
                 });
@@ -269,13 +269,13 @@ namespace Data.Migrations
 
                     b.Property<DateTime>("Date");
 
-                    b.Property<int?>("DayOfWeek");
+                    b.Property<int?>("Day1");
 
                     b.Property<int?>("NoneStandardAvailableWorkDayId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DayOfWeek");
+                    b.HasIndex("Day1");
 
                     b.ToTable("DateBoundTimeRanges");
                 });
@@ -402,9 +402,9 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Domain.Entities.Wrappers.WeekDay", b =>
                 {
-                    b.Property<int>("DayOfWeek");
+                    b.Property<int>("Day");
 
-                    b.HasKey("DayOfWeek");
+                    b.HasKey("Day");
 
                     b.ToTable("WeekDay");
                 });
@@ -489,7 +489,7 @@ namespace Data.Migrations
 
                     b.HasOne("Domain.Entities.Wrappers.WeekDay", "WeekDay")
                         .WithMany("DaysOff")
-                        .HasForeignKey("WeekDayDayOfWeek");
+                        .HasForeignKey("WeekDayDay");
                 });
 
             modelBuilder.Entity("Domain.Entities.Junctions.NoneStandardAvailableWorkDay", b =>
@@ -522,7 +522,7 @@ namespace Data.Migrations
                 {
                     b.HasOne("Domain.Entities.Wrappers.WeekDay", "Day")
                         .WithMany()
-                        .HasForeignKey("DayOfWeek");
+                        .HasForeignKey("Day1");
                 });
 
             modelBuilder.Entity("Domain.Entities.ScheduleObjects.Schedule", b =>

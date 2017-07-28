@@ -9,8 +9,8 @@ using Domain.Enums;
 namespace Data.Migrations
 {
     [DbContext(typeof(HairdresserBookingAppContext))]
-    [Migration("20170727205239_test")]
-    partial class test
+    [Migration("20170728070306_hh")]
+    partial class hh
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -403,9 +403,11 @@ namespace Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int>("DayOfWeek");
+                    b.Property<int>("Day");
 
                     b.HasKey("Id");
+
+                    b.HasAlternateKey("Day");
 
                     b.ToTable("WeekDay");
                 });

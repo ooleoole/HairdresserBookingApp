@@ -9,9 +9,10 @@ using Domain.Enums;
 namespace Data.Migrations
 {
     [DbContext(typeof(HairdresserBookingAppContext))]
-    partial class HairdresserBookingAppContextModelSnapshot : ModelSnapshot
+    [Migration("20170728060338_test")]
+    partial class test
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
@@ -224,11 +225,13 @@ namespace Data.Migrations
                 {
                     b.Property<int>("ScheduleBaseSettingsId");
 
-                    b.Property<int>("WeekDayId");
+                    b.Property<int>("DayId");
 
-                    b.HasKey("ScheduleBaseSettingsId", "WeekDayId");
+                    b.Property<int?>("Day1");
 
-                    b.HasIndex("WeekDayId");
+                    b.HasKey("ScheduleBaseSettingsId", "DayId");
+
+                    b.HasIndex("Day1");
 
                     b.ToTable("DayOff");
                 });
@@ -266,13 +269,13 @@ namespace Data.Migrations
 
                     b.Property<DateTime>("Date");
 
-                    b.Property<int?>("DayId");
+                    b.Property<int?>("Day1");
 
                     b.Property<int?>("NoneStandardAvailableWorkDayId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DayId");
+                    b.HasIndex("Day1");
 
                     b.ToTable("DateBoundTimeRanges");
                 });
@@ -399,14 +402,9 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Domain.Entities.Wrappers.WeekDay", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
                     b.Property<int>("Day");
 
-                    b.HasKey("Id");
-
-                    b.HasAlternateKey("Day");
+                    b.HasKey("Day");
 
                     b.ToTable("WeekDay");
                 });
@@ -484,14 +482,13 @@ namespace Data.Migrations
 
             modelBuilder.Entity("Domain.Entities.Junctions.DayOff", b =>
                 {
+                    b.HasOne("Domain.Entities.Wrappers.WeekDay", "Day")
+                        .WithMany("DaysOff")
+                        .HasForeignKey("Day1");
+
                     b.HasOne("Domain.Entities.ScheduleObjects.ScheduleBaseSettings", "ScheduleBaseSettings")
                         .WithMany("DaysOff")
                         .HasForeignKey("ScheduleBaseSettingsId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Domain.Entities.Wrappers.WeekDay", "WeekDay")
-                        .WithMany("DaysOff")
-                        .HasForeignKey("WeekDayId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
@@ -525,7 +522,7 @@ namespace Data.Migrations
                 {
                     b.HasOne("Domain.Entities.Wrappers.WeekDay", "Day")
                         .WithMany()
-                        .HasForeignKey("DayId");
+                        .HasForeignKey("Day1");
                 });
 
             modelBuilder.Entity("Domain.Entities.ScheduleObjects.Schedule", b =>

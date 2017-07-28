@@ -1,5 +1,4 @@
-﻿using System;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Domain.Entities.Junctions;
 using Domain.Entities.ScheduleObjects;
 using Domain.Entities.Wrappers;
@@ -46,6 +45,7 @@ namespace Data.EntityConfigurations
         public static void Map(EntityTypeBuilder<DayOff> entityTypeBuilder)
         {
             entityTypeBuilder.HasKey(p => new { p.ScheduleBaseSettingsId, p.WeekDayId });
+            entityTypeBuilder.HasOne(p => p.WeekDay).WithMany(p => p.DaysOff).HasForeignKey(p => p.WeekDayId);
 
         }
 
@@ -56,9 +56,11 @@ namespace Data.EntityConfigurations
         }
         public static void Map(EntityTypeBuilder<WeekDay> entityTypeBuilder)
         {
-            entityTypeBuilder.HasKey(p => p.DayOfWeek);
+            entityTypeBuilder.HasAlternateKey(p => p.Day);
 
         }
+
+
 
 
 

@@ -32,7 +32,7 @@ namespace Domain.Entities.ScheduleObjects
         public DateBoundTimeRanges(DateTime date)
         {
             Date = date.Date;
-            Day.DayOfWeek = date.DayOfWeek;
+            Day.Day = date.DayOfWeek;
         }
 
         public DateBoundTimeRanges AddTimeRange(TimeRange newTimeRange)

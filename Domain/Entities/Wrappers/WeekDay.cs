@@ -6,9 +6,11 @@ namespace Domain.Entities.Wrappers
 {
     public class WeekDay
     {
-        
-        public DayOfWeek DayOfWeek { get; set; }
+        public int Id { get; set; }
+        public DayOfWeek Day { get; set; }
 
         public IEnumerable<DayOff> DaysOff { get; set; }
     }
+
+    
 }
