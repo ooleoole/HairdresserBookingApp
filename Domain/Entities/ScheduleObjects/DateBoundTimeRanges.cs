@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Domain.Entities.Junctions;
 using Domain.Entities.Wrappers;
 using Domain.Interfaces;
 
@@ -12,11 +11,13 @@ namespace Domain.Entities.ScheduleObjects
         public int Id { get; set; }
         public DateTime Date { get; set; }
         public IEnumerable<TimeRange> TimeRanges { get; private set; } = new List<TimeRange>();
-        public WeekDay Day { get; set; }
+        public WeekDay Day { get; set; } = new WeekDay();
 
-        public NoneStandardAvailableWorkDay Schedules { get; set; }
-        public int? NoneStandardAvailableWorkDayId { get; set; }
+        //public Schedule NoneStandardAvailableHoursSchedule { get; set; }
+        //public int? NoneStandardAvailableHoursScheduleId { get; set; }
 
+        //public Schedule DisabledHoursSchedule { get; set; }
+        //public int? DisabledHoursScheduleId { get; set; }
 
         public bool Bookable => TimeRanges.Any();
 

@@ -1,7 +1,9 @@
-﻿using Domain.Entities;
+﻿using System;
+using Domain.Entities;
 using Domain.Entities.Junctions;
 using Domain.Entities.ScheduleObjects;
 using Domain.Entities.Wrappers;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Data.EntityConfigurations
@@ -18,20 +20,32 @@ namespace Data.EntityConfigurations
             entityTypeBuilder.HasAlternateKey(p => p.SocialSecurityNumber);
         }
 
-        public static void Map(EntityTypeBuilder<NoneStandardAvailableWorkDay> entityTypeBuilder)
-        {
-            entityTypeBuilder.HasKey(p => p.DateBoundTimeRangesId);
-            entityTypeBuilder.Property(p => p.ScheduleId).IsRequired();
-        }
+
 
         public static void Map(EntityTypeBuilder<DateBoundTimeRanges> entityTypeBuilder)
         {
+            entityTypeBuilder.Property(p => p.Id).UseSqlServerIdentityColumn();
 
             entityTypeBuilder.HasMany(p => p.TimeRanges).WithOne();
+            //entityTypeBuilder.Property<int>("NoneStandardAvailableHoursScheduleId");
+            //entityTypeBuilder.HasOne("NoneStandardAvailableHoursScheduleId")
+            //    .WithMany("NoneStandardAvailableHours")
+            //    .HasForeignKey("NoneStandardAvailableHoursScheduleId");
+
+            //entityTypeBuilder.HasOne(p => p.DisabledHoursSchedule)
+            //    .WithMany(p => p.DisabledHours).HasForeignKey(p => p.DisabledHoursScheduleId);
+            //entityTypeBuilder.Property<int>("NoneStandardAvailableHoursScheduleId");
+            //entityTypeBuilder.Property<int>("DisabledHoursScheduleId");
+            entityTypeBuilder.Property<int?>("ScheduleId").HasColumnName("DisabledHoursScheduleId");
+            entityTypeBuilder.Property<int?>("ScheduleId1").HasColumnName("NoneStandardAvailableHoursScheduleId");
         }
 
         public static void Map(EntityTypeBuilder<Schedule> entityTypeBuilder)
         {
+            entityTypeBuilder.Property(p => p.Id).UseSqlServerIdentityColumn();
+            entityTypeBuilder.HasMany(p => p.DisabledHours).WithOne();
+            entityTypeBuilder.HasMany(p => p.NoneStandardAvailableHours)
+                .WithOne();
 
 
         }
@@ -60,8 +74,34 @@ namespace Data.EntityConfigurations
 
         }
 
+        public static void Map(EntityTypeBuilder<Booking> entityTypeBuilder)
+        {
+            entityTypeBuilder.HasAlternateKey(b => new { b.TreatmentId, b.CostumerId, b.DateAndTime });
+
+        }
+        public static void Map(EntityTypeBuilder<TimeRange> entityTypeBuilder)
+        {
+            ConfigureShadowId(entityTypeBuilder);
+        }
 
 
+
+        public static void Map(EntityTypeBuilder<Address> entityTypeBuilder)
+        {
+            ConfigureShadowId(entityTypeBuilder);
+            entityTypeBuilder.Property(p => p.Street).IsRequired().HasMaxLength(96);
+            entityTypeBuilder.Property(p => p.City).IsRequired().HasMaxLength(50);
+            entityTypeBuilder.Property(p => p.ZipCode).IsRequired().HasMaxLength(8);
+            entityTypeBuilder.Property(p => p.Co).HasMaxLength(96);
+
+        }
+
+        private static void ConfigureShadowId(EntityTypeBuilder entityTypeBuilder)
+        {
+            entityTypeBuilder.Property<int>("Id").UseSqlServerIdentityColumn();
+            entityTypeBuilder.HasKey("Id");
+
+        }
 
 
     }

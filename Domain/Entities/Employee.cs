@@ -11,18 +11,14 @@ namespace Domain.Entities
         [Required]
         public int HairDresserId { get; set; }
         public HairDresser HairDresser { get; set; }
-        [Required]
-        public DateTime WorkingHoursStart { get; set; }
-        [Required]
-        public DateTime WorkingHoursEnd { get; set; }
 
-        
         [Required]
         public int CompanyId { get; set; }
         public Company Employment { get; set; }
-        public IEnumerable<Treatment> Treatments { get; set; }
+        public IEnumerable<Treatment> WorkLoad { get; set; }
 
-        
+        public int AddressId { get; set; }
+        public Address Address { get; set; }
 
     }
 }

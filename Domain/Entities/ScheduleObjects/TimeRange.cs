@@ -1,13 +1,10 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics;
 
 namespace Domain.Entities.ScheduleObjects
 {
     
     public class TimeRange
     {
-        public int Id { get; set; }
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime => StartTime + Duration;
 
