@@ -18,7 +18,7 @@ namespace Domain.Entities
         public string Notes { get; set; }
 
 
-        public IEnumerable<TreatmentHairDresser> Masters { get; set; }
+        public IEnumerable<TreatmentHairDresser> WorkLoad { get; set; }
 
         [Required]
         public int CompanyId { get; set; }

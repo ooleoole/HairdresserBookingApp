@@ -9,13 +9,13 @@ namespace Domain.Entities.ScheduleObjects
         public IEnumerable<DateBoundTimeRanges> Week { get; private set; } = new HashSet<DateBoundTimeRanges>();
         public int WeekNumber { get; set; }
 
-        public WeeklyWorkingHours(Employee employee, int weekNumber)
+        public WeeklyWorkingHours(HairDresser employee, int weekNumber)
         {
             GenerateBaseWeek(employee);
 
         }
 
-        private void GenerateBaseWeek(Employee employee, params DayOfWeek[] daysOff)
+        private void GenerateBaseWeek(HairDresser employee, params DayOfWeek[] daysOff)
         {
             for (int i = 0; i < 7; i++)
             {

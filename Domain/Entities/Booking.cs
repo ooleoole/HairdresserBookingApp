@@ -28,6 +28,9 @@ namespace Domain.Entities
         public int ScheduleId { get; set; }
         public Schedule Schedule { get; set; }
 
+        public int PerformerId { get; set; }
+        public HairDresser Performer { get; set; }
+
 
 
     }

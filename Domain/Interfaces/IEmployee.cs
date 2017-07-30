@@ -8,7 +8,7 @@ namespace Domain.Interfaces
     {
         Company Employment { get; set; }
         int EmploymentNumber { get; set; }
-        HairDresser HairDresser { get; set; }
+        
         IEnumerable<Treatment> Treatments { get; set; }
         
     }

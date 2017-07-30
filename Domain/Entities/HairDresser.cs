@@ -1,26 +1,27 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using Domain.Entities.Junctions;
+using Domain.Interfaces;
 
 namespace Domain.Entities
 {
-    public class HairDresser
+    public class HairDresser : IEmployee
     {
-
-        public int Id { get; set; }
-        [Required, MaxLength(36)]
+        public int EmploymentNumber { get; set; }
         public string FirstName { get; set; }
-        [Required, MaxLength(36)]
         public string LastName { get; set; }
-        [Required, MinLength(9), MaxLength(11)]
         public string PhoneNumber { get; set; }
-        [Required, EmailAddress]
         public string Email { get; set; }
-        [Required, MinLength(10), MaxLength(13)]
         public string SocialSecurityNumber { get; set; }
 
+        public int AddressId { get; set; }
         public Address Address { get; set; }
-        public IEnumerable<TreatmentHairDresser> MasteredTreatments { get; set; }
-        public IEnumerable<Employee> Employments { get; set; }
+
+      
+        public int? CompanyId { get; set; }
+        public Company Employment { get; set; }
+        public IEnumerable<Treatment> Treatments { get; set; }
+
+
     }
 }

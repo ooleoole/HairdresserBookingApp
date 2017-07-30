@@ -18,7 +18,7 @@ namespace Domain.Entities.ScheduleObjects
 
         public ScheduleBaseSettings ScheduleBaseSettings { get; set; }
         public int? EmployeeId { get; set; }
-        public Employee Employee { get; set; }
+        public HairDresser Employee { get; set; }
 
 
         public Schedule()

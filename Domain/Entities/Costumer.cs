@@ -26,8 +26,9 @@ namespace Domain.Entities
         public int AddressId { get; set; }
         [Required]
         public Address Address { get; set; }
-
-        public IEnumerable<CompanyCostumer> Companies { get; set; }= new List<CompanyCostumer>();
+        public int CompanyId { get; set; }
+        public Company Company { get; set; }
+        
 
     }
 }

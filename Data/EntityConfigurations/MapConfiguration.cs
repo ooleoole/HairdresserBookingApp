@@ -13,12 +13,14 @@ namespace Data.EntityConfigurations
     {
         public static void Map(EntityTypeBuilder<HairDresser> entityTypeBuilder)
         {
+            entityTypeBuilder.HasKey(p => new {p.EmploymentNumber, p.CompanyId, p.SocialSecurityNumber});
             entityTypeBuilder.Property(p => p.FirstName).IsRequired().HasMaxLength(36);
             entityTypeBuilder.Property(p => p.LastName).IsRequired().HasMaxLength(36);
             entityTypeBuilder.Property(p => p.PhoneNumber).IsRequired().HasMaxLength(11);
             entityTypeBuilder.Property(p => p.Email).IsRequired().HasMaxLength(56);
             entityTypeBuilder.Property(p => p.SocialSecurityNumber).IsRequired().HasMaxLength(13);
-            entityTypeBuilder.HasAlternateKey(p => p.SocialSecurityNumber);
+            entityTypeBuilder.Property(p => p.EmploymentNumber).ValueGeneratedOnAdd();
+
         }
 
 
@@ -62,8 +64,8 @@ namespace Data.EntityConfigurations
         public static void Map(EntityTypeBuilder<Booking> entityTypeBuilder)
         {
             entityTypeBuilder.HasAlternateKey(b => new { b.TreatmentId, b.CostumerId, b.DateAndTime });
-            entityTypeBuilder.i
-            
+
+
         }
         public static void Map(EntityTypeBuilder<TimeRange> entityTypeBuilder)
         {
@@ -87,6 +89,11 @@ namespace Data.EntityConfigurations
             entityTypeBuilder.Property<int>("Id").UseSqlServerIdentityColumn();
             entityTypeBuilder.HasKey("Id");
         }
+        public static void Map(EntityTypeBuilder<Costumer> entityTypeBuilder)
+        {
+            entityTypeBuilder.HasAlternateKey(c => new { c.FirstName, c.LastName, c.AddressId, c.CompanyId });
+        }
+
 
 
     }

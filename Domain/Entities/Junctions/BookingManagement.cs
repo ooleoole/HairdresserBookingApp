@@ -9,8 +9,8 @@ namespace Domain.Entities.Junctions
     {
         public bool CancelledBooking { get; set; }
         [Required]
-        public int EmployeeId { get; set; }
-        public Employee Employee { get; set; }
+        public int HairDresserId { get; set; }
+        public HairDresser HairDresser { get; set; }
         [Required]
         public int BookingId { get; set; }
         public Booking Booking { get; set; }
