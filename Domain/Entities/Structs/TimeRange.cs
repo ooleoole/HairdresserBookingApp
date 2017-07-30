@@ -1,24 +1,44 @@
 ﻿using System;
 
-namespace Domain.Entities.ScheduleObjects
+namespace Domain.Entities.Structs
 {
-    
+
     public class TimeRange
     {
+        private TimeSpan _duration;
+
         public TimeSpan StartTime { get; set; }
         public TimeSpan EndTime => StartTime + Duration;
+        public TimeSpan Duration
+        {
+            get => _duration;
+            set
+            {
+                ValidateDuration(value);
+                _duration = value;
+            }
+        }
 
-        public TimeSpan Duration { get; set; }
-
+        public TimeRange()
+        {
+        }
         public TimeRange(DateTime startTime, TimeSpan duration)
         {
+            ValidateDuration(duration);
             StartTime = startTime.TimeOfDay;
             Duration = duration;
         }
         public TimeRange(TimeSpan startTime, TimeSpan duration)
         {
+            ValidateDuration(duration);
             StartTime = startTime;
             Duration = duration;
+        }
+
+        private void ValidateDuration(TimeSpan duration)
+        {
+            if (duration < TimeSpan.Zero)
+                throw new ArgumentOutOfRangeException($"Duration cannot be negativ");
         }
 
 

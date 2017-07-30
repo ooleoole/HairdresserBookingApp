@@ -4,13 +4,15 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Data.Context;
+using Domain.Enums;
 
 namespace Data.Migrations
 {
     [DbContext(typeof(HairdresserBookingAppContext))]
-    partial class HairdresserBookingAppContextModelSnapshot : ModelSnapshot
+    [Migration("20170730102011_ola2")]
+    partial class ola2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
@@ -82,7 +84,7 @@ namespace Data.Migrations
 
                     b.HasIndex("TotalTimeId");
 
-                    b.ToTable("Bookings");
+                    b.ToTable("Booking");
                 });
 
             modelBuilder.Entity("Domain.Entities.Company", b =>
@@ -244,6 +246,31 @@ namespace Data.Migrations
                     b.ToTable("TreatmentHairDresser");
                 });
 
+            modelBuilder.Entity("Domain.Entities.ScheduleObjects.DateBoundTimeRanges", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("Date");
+
+                    b.Property<int>("Day");
+
+                    b.Property<int?>("ScheduleId")
+                        .HasColumnName("DisabledHoursScheduleId");
+
+                    b.Property<int?>("ScheduleId1")
+                        .HasColumnName("NoneStandardAvailableHoursScheduleId");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ScheduleId");
+
+                    b.HasIndex("ScheduleId1");
+
+                    b.ToTable("DateBoundTimeRangeses");
+                });
+
             modelBuilder.Entity("Domain.Entities.ScheduleObjects.Schedule", b =>
                 {
                     b.Property<int>("Id")
@@ -307,50 +334,6 @@ namespace Data.Migrations
                     b.ToTable("Skills");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Structs.DateBoundTimeRanges", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<DateTime>("Date");
-
-                    b.Property<int>("Day");
-
-                    b.Property<int?>("ScheduleId")
-                        .HasColumnName("DisabledHoursScheduleId");
-
-                    b.Property<int?>("ScheduleId1")
-                        .HasColumnName("NoneStandardAvailableHoursScheduleId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ScheduleId");
-
-                    b.HasIndex("ScheduleId1");
-
-                    b.ToTable("DateBoundTimeRangeses");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Structs.TimeRange", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("DateBoundTimeRangesId");
-
-                    b.Property<TimeSpan>("Duration");
-
-                    b.Property<TimeSpan>("StartTime");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("DateBoundTimeRangesId");
-
-                    b.ToTable("TimeRange");
-                });
-
             modelBuilder.Entity("Domain.Entities.Treatment", b =>
                 {
                     b.Property<int>("Id")
@@ -390,6 +373,25 @@ namespace Data.Migrations
                     b.ToTable("Treatment");
                 });
 
+            modelBuilder.Entity("Domain.Entities.Wrappers.TimeRange", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("DateBoundTimeRangesId");
+
+                    b.Property<TimeSpan>("Duration");
+
+                    b.Property<TimeSpan>("StartTime");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DateBoundTimeRangesId");
+
+                    b.ToTable("TimeRange");
+                });
+
             modelBuilder.Entity("Domain.Entities.Booking", b =>
                 {
                     b.HasOne("Domain.Entities.Costumer", "Costumer")
@@ -397,7 +399,7 @@ namespace Data.Migrations
                         .HasForeignKey("CostumerId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Domain.Entities.Structs.TimeRange", "ExtraTime")
+                    b.HasOne("Domain.Entities.Wrappers.TimeRange", "ExtraTime")
                         .WithMany()
                         .HasForeignKey("ExtraTimeId");
 
@@ -406,7 +408,7 @@ namespace Data.Migrations
                         .HasForeignKey("ScheduleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Domain.Entities.Structs.TimeRange", "TotalTime")
+                    b.HasOne("Domain.Entities.Wrappers.TimeRange", "TotalTime")
                         .WithMany()
                         .HasForeignKey("TotalTimeId");
 
@@ -491,40 +493,7 @@ namespace Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Domain.Entities.ScheduleObjects.Schedule", b =>
-                {
-                    b.HasOne("Domain.Entities.Employee", "Employee")
-                        .WithMany()
-                        .HasForeignKey("EmployeeCompanyId", "EmployeeHairDresserId", "EmployeeEmploymentNumber");
-                });
-
-            modelBuilder.Entity("Domain.Entities.ScheduleObjects.ScheduleBaseSettings", b =>
-                {
-                    b.HasOne("Domain.Entities.Structs.TimeRange", "Lunch")
-                        .WithMany()
-                        .HasForeignKey("LunchId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Domain.Entities.ScheduleObjects.Schedule", "Schedule")
-                        .WithOne("ScheduleBaseSettings")
-                        .HasForeignKey("Domain.Entities.ScheduleObjects.ScheduleBaseSettings", "ScheduleId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Domain.Entities.Structs.TimeRange", "WorkHours")
-                        .WithMany()
-                        .HasForeignKey("WorkHoursId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Domain.Entities.Skill", b =>
-                {
-                    b.HasOne("Domain.Entities.HairDresser", "Master")
-                        .WithMany()
-                        .HasForeignKey("MasterId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Domain.Entities.Structs.DateBoundTimeRanges", b =>
+            modelBuilder.Entity("Domain.Entities.ScheduleObjects.DateBoundTimeRanges", b =>
                 {
                     b.HasOne("Domain.Entities.ScheduleObjects.Schedule")
                         .WithMany("DisabledHours")
@@ -535,11 +504,36 @@ namespace Data.Migrations
                         .HasForeignKey("ScheduleId1");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Structs.TimeRange", b =>
+            modelBuilder.Entity("Domain.Entities.ScheduleObjects.Schedule", b =>
                 {
-                    b.HasOne("Domain.Entities.Structs.DateBoundTimeRanges")
-                        .WithMany("TimeRanges")
-                        .HasForeignKey("DateBoundTimeRangesId")
+                    b.HasOne("Domain.Entities.Employee", "Employee")
+                        .WithMany()
+                        .HasForeignKey("EmployeeCompanyId", "EmployeeHairDresserId", "EmployeeEmploymentNumber");
+                });
+
+            modelBuilder.Entity("Domain.Entities.ScheduleObjects.ScheduleBaseSettings", b =>
+                {
+                    b.HasOne("Domain.Entities.Wrappers.TimeRange", "Lunch")
+                        .WithMany()
+                        .HasForeignKey("LunchId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Domain.Entities.ScheduleObjects.Schedule", "Schedule")
+                        .WithOne("ScheduleBaseSettings")
+                        .HasForeignKey("Domain.Entities.ScheduleObjects.ScheduleBaseSettings", "ScheduleId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Domain.Entities.Wrappers.TimeRange", "WorkHours")
+                        .WithMany()
+                        .HasForeignKey("WorkHoursId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("Domain.Entities.Skill", b =>
+                {
+                    b.HasOne("Domain.Entities.HairDresser", "Master")
+                        .WithMany()
+                        .HasForeignKey("MasterId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
@@ -557,6 +551,14 @@ namespace Data.Migrations
                     b.HasOne("Domain.Entities.Employee")
                         .WithMany("WorkLoad")
                         .HasForeignKey("EmployeeCompanyId", "EmployeeHairDresserId", "EmployeeEmploymentNumber");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Wrappers.TimeRange", b =>
+                {
+                    b.HasOne("Domain.Entities.ScheduleObjects.DateBoundTimeRanges")
+                        .WithMany("TimeRanges")
+                        .HasForeignKey("DateBoundTimeRangesId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
         }
     }

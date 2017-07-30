@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using Domain.Entities.ScheduleObjects;
+using Domain.Entities.Structs;
 
 namespace Domain.Entities
 {

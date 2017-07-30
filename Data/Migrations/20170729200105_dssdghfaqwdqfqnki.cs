@@ -42,7 +42,7 @@ namespace Data.Migrations
                 column: "DisabledHoursScheduleId",
                 principalTable: "Schedules",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+                onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_DateBoundTimeRangeses_Schedules_NoneStandardAvailableHoursScheduleId",
@@ -50,7 +50,7 @@ namespace Data.Migrations
                 column: "NoneStandardAvailableHoursScheduleId",
                 principalTable: "Schedules",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Restrict);
+                onDelete: ReferentialAction.Cascade);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

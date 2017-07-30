@@ -15,7 +15,7 @@ namespace Domain.Entities
         [Required]
         public int CompanyId { get; set; }
         public Company Employment { get; set; }
-        public IEnumerable<Treatment> WorkLoad { get; set; }
+        public IEnumerable<Treatment> Treatments { get; set; }
 
         public int AddressId { get; set; }
         public Address Address { get; set; }

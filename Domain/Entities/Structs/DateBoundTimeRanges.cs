@@ -1,25 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Domain.Entities.Wrappers;
 using Domain.Interfaces;
 
-namespace Domain.Entities.ScheduleObjects
+namespace Domain.Entities.Structs
 {
     public class DateBoundTimeRanges : IDateBoundTimeRanges
     {
-        public int Id { get; set; }
         public DateTime Date { get; set; }
         public IEnumerable<TimeRange> TimeRanges { get; private set; } = new List<TimeRange>();
-        public WeekDay Day { get; set; } = new WeekDay();
-
-        //public Schedule NoneStandardAvailableHoursSchedule { get; set; }
-        //public int? NoneStandardAvailableHoursScheduleId { get; set; }
-
-        //public Schedule DisabledHoursSchedule { get; set; }
-        //public int? DisabledHoursScheduleId { get; set; }
-
-        public bool Bookable => TimeRanges.Any();
+        public DayOfWeek Day { get; private set; }
 
         private DateBoundTimeRanges() { }
 
@@ -33,7 +23,7 @@ namespace Domain.Entities.ScheduleObjects
         public DateBoundTimeRanges(DateTime date)
         {
             Date = date.Date;
-            Day.Day = date.DayOfWeek;
+            Day = date.DayOfWeek;
         }
 
         public DateBoundTimeRanges AddTimeRange(TimeRange newTimeRange)
@@ -117,13 +107,14 @@ namespace Domain.Entities.ScheduleObjects
         }
         private static bool TimeRangeCutsEndOfStoredTimeRange(TimeRange timeRange,
             TimeRange storedTimeRange) =>
-            NewTimeRangeDoNotEndAfterStoredTimeRange(timeRange, storedTimeRange) &&
+            !NewTimeRangeDoNotEndAfterStoredTimeRange(timeRange, storedTimeRange) &&
             StoredTimeRangeStartsBeforeTimeRange(timeRange, storedTimeRange);
 
         private static bool TimeRangeCutsStartOfStoredTimeRange(TimeRange timeRange,
             TimeRange storedTimeRange) =>
             NewTimeRangeDoNotStartAfterStoredTimeRange(timeRange, storedTimeRange) &&
-            TimeRangeEndBeforStoredTimeRange(timeRange, storedTimeRange);
+            TimeRangeEndBeforStoredTimeRange(timeRange, storedTimeRange) &&
+            timeRange.EndTime != storedTimeRange.StartTime;
 
 
         private static bool TimeRangeSplitsStoredTimeRange(TimeRange timeRange,

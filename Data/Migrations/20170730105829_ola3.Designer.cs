@@ -4,13 +4,15 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Data.Context;
+using Domain.Enums;
 
 namespace Data.Migrations
 {
     [DbContext(typeof(HairdresserBookingAppContext))]
-    partial class HairdresserBookingAppContextModelSnapshot : ModelSnapshot
+    [Migration("20170730105829_ola3")]
+    partial class ola3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")

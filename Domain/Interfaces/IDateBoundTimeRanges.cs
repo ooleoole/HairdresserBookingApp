@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using Domain.Entities.ScheduleObjects;
-using Domain.Entities.Wrappers;
+using Domain.Entities.Structs;
 
 namespace Domain.Interfaces
 {
     public interface IDateBoundTimeRanges
     {
-        bool Bookable { get; }
+        
         DateTime Date { get; set; }
-        WeekDay Day { get; set; }
+        DayOfWeek Day { get; }
         IEnumerable<TimeRange> TimeRanges { get; }
 
         DateBoundTimeRanges AddTimeRange(TimeRange newTimeRange);

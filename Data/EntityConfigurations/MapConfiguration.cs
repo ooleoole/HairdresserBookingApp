@@ -2,8 +2,9 @@
 using Domain.Entities;
 using Domain.Entities.Junctions;
 using Domain.Entities.ScheduleObjects;
-using Domain.Entities.Wrappers;
+using Domain.Entities.Structs;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Data.EntityConfigurations
@@ -24,18 +25,8 @@ namespace Data.EntityConfigurations
 
         public static void Map(EntityTypeBuilder<DateBoundTimeRanges> entityTypeBuilder)
         {
-            entityTypeBuilder.Property(p => p.Id).UseSqlServerIdentityColumn();
-
-            entityTypeBuilder.HasMany(p => p.TimeRanges).WithOne();
-            //entityTypeBuilder.Property<int>("NoneStandardAvailableHoursScheduleId");
-            //entityTypeBuilder.HasOne("NoneStandardAvailableHoursScheduleId")
-            //    .WithMany("NoneStandardAvailableHours")
-            //    .HasForeignKey("NoneStandardAvailableHoursScheduleId");
-
-            //entityTypeBuilder.HasOne(p => p.DisabledHoursSchedule)
-            //    .WithMany(p => p.DisabledHours).HasForeignKey(p => p.DisabledHoursScheduleId);
-            //entityTypeBuilder.Property<int>("NoneStandardAvailableHoursScheduleId");
-            //entityTypeBuilder.Property<int>("DisabledHoursScheduleId");
+            ConfigureShadowId(entityTypeBuilder);
+            entityTypeBuilder.HasMany(p => p.TimeRanges).WithOne().OnDelete(DeleteBehavior.Cascade);
             entityTypeBuilder.Property<int?>("ScheduleId").HasColumnName("DisabledHoursScheduleId");
             entityTypeBuilder.Property<int?>("ScheduleId1").HasColumnName("NoneStandardAvailableHoursScheduleId");
         }
@@ -43,11 +34,9 @@ namespace Data.EntityConfigurations
         public static void Map(EntityTypeBuilder<Schedule> entityTypeBuilder)
         {
             entityTypeBuilder.Property(p => p.Id).UseSqlServerIdentityColumn();
-            entityTypeBuilder.HasMany(p => p.DisabledHours).WithOne();
+            entityTypeBuilder.HasMany(p => p.DisabledHours).WithOne().OnDelete(DeleteBehavior.Restrict);
             entityTypeBuilder.HasMany(p => p.NoneStandardAvailableHours)
-                .WithOne();
-
-
+                .WithOne().OnDelete(DeleteBehavior.Restrict);
         }
 
         public static void Map(EntityTypeBuilder<ScheduleBaseSettings> entityTypeBuilder)
@@ -58,8 +47,8 @@ namespace Data.EntityConfigurations
 
         public static void Map(EntityTypeBuilder<DayOff> entityTypeBuilder)
         {
-            entityTypeBuilder.HasKey(p => new { p.ScheduleBaseSettingsId, p.WeekDayId });
-            entityTypeBuilder.HasOne(p => p.WeekDay).WithMany(p => p.DaysOff).HasForeignKey(p => p.WeekDayId);
+            entityTypeBuilder.HasKey(p => new { p.ScheduleBaseSettingsId, p.WeekDay });
+            //entityTypeBuilder.HasOne(p => p.WeekDay).WithMany().HasForeignKey(p => p.WeekDay);
 
         }
 
@@ -68,16 +57,13 @@ namespace Data.EntityConfigurations
             entityTypeBuilder.HasKey(p => new { p.HairDresserId, p.TreatmentId });
 
         }
-        public static void Map(EntityTypeBuilder<WeekDay> entityTypeBuilder)
-        {
-            entityTypeBuilder.HasAlternateKey(p => p.Day);
 
-        }
 
         public static void Map(EntityTypeBuilder<Booking> entityTypeBuilder)
         {
             entityTypeBuilder.HasAlternateKey(b => new { b.TreatmentId, b.CostumerId, b.DateAndTime });
-
+            entityTypeBuilder.i
+            
         }
         public static void Map(EntityTypeBuilder<TimeRange> entityTypeBuilder)
         {
@@ -100,7 +86,6 @@ namespace Data.EntityConfigurations
         {
             entityTypeBuilder.Property<int>("Id").UseSqlServerIdentityColumn();
             entityTypeBuilder.HasKey("Id");
-
         }
 
 

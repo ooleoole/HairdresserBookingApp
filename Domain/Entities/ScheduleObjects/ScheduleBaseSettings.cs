@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Domain.Entities.Junctions;
-using Domain.Entities.Wrappers;
+using Domain.Entities.Structs;
 
 namespace Domain.Entities.ScheduleObjects
 {
