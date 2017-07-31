@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using Domain.Entities.Junctions;
 using Domain.Interfaces;
 
 namespace Domain.Entities
 {
-    public class HairDresser : IEmployee
+    public class Employee : IEmployee
     {
         public int EmploymentNumber { get; set; }
         public string FirstName { get; set; }
@@ -20,7 +19,7 @@ namespace Domain.Entities
       
         public int? CompanyId { get; set; }
         public Company Employment { get; set; }
-        public IEnumerable<Treatment> Treatments { get; set; }
+        public IEnumerable<TreatmentPerformer> Treatments { get; set; }
 
 
     }

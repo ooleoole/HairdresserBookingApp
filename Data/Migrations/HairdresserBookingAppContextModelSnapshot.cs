@@ -56,26 +56,16 @@ namespace Data.Migrations
 
                     b.Property<int>("ExtraCost");
 
-                    b.Property<int?>("ExtraTimeId");
+                    b.Property<TimeSpan>("ExtraTime");
 
                     b.Property<bool>("IsCancelled");
 
                     b.Property<string>("Notes")
                         .HasMaxLength(256);
 
-                    b.Property<int?>("PerformerCompanyId");
-
-                    b.Property<int?>("PerformerEmploymentNumber");
-
                     b.Property<int>("PerformerId");
 
-                    b.Property<string>("PerformerSocialSecurityNumber");
-
                     b.Property<int>("ScheduleId");
-
-                    b.Property<int>("TotalPrice");
-
-                    b.Property<int?>("TotalTimeId");
 
                     b.Property<int>("TreatmentId");
 
@@ -85,13 +75,9 @@ namespace Data.Migrations
 
                     b.HasIndex("CostumerId");
 
-                    b.HasIndex("ExtraTimeId");
+                    b.HasIndex("PerformerId");
 
                     b.HasIndex("ScheduleId");
-
-                    b.HasIndex("TotalTimeId");
-
-                    b.HasIndex("PerformerEmploymentNumber", "PerformerCompanyId", "PerformerSocialSecurityNumber");
 
                     b.ToTable("Bookings");
                 });
@@ -104,7 +90,8 @@ namespace Data.Migrations
                     b.Property<int>("AddressId");
 
                     b.Property<string>("Email")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasMaxLength(50);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -133,10 +120,11 @@ namespace Data.Migrations
                     b.Property<int>("CompanyId");
 
                     b.Property<string>("Email")
-                        .IsRequired();
+                        .HasMaxLength(50);
 
                     b.Property<string>("FirstName")
-                        .IsRequired();
+                        .IsRequired()
+                        .HasMaxLength(36);
 
                     b.Property<int>("Gender");
 
@@ -155,9 +143,6 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasAlternateKey("Email");
-
-
                     b.HasAlternateKey("FirstName", "LastName", "AddressId", "CompanyId");
 
                     b.HasIndex("AddressId");
@@ -167,17 +152,15 @@ namespace Data.Migrations
                     b.ToTable("Costumers");
                 });
 
-            modelBuilder.Entity("Domain.Entities.HairDresser", b =>
+            modelBuilder.Entity("Domain.Entities.Employee", b =>
                 {
                     b.Property<int>("EmploymentNumber")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("CompanyId");
-
-                    b.Property<string>("SocialSecurityNumber")
-                        .HasMaxLength(13);
-
                     b.Property<int>("AddressId");
+
+                    b.Property<int?>("CompanyId")
+                        .IsRequired();
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -195,13 +178,34 @@ namespace Data.Migrations
                         .IsRequired()
                         .HasMaxLength(11);
 
-                    b.HasKey("EmploymentNumber", "CompanyId", "SocialSecurityNumber");
+                    b.Property<string>("SocialSecurityNumber")
+                        .IsRequired()
+                        .HasMaxLength(13);
+
+                    b.HasKey("EmploymentNumber");
+
+                    b.HasAlternateKey("EmploymentNumber", "CompanyId", "SocialSecurityNumber");
 
                     b.HasIndex("AddressId");
 
                     b.HasIndex("CompanyId");
 
                     b.ToTable("Employees");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Junctions.BookingManagement", b =>
+                {
+                    b.Property<int>("BookingId");
+
+                    b.Property<int>("HairDresserId");
+
+                    b.Property<int>("Action");
+
+                    b.HasKey("BookingId", "HairDresserId", "Action");
+
+                    b.HasIndex("HairDresserId");
+
+                    b.ToTable("BookingManagement");
                 });
 
             modelBuilder.Entity("Domain.Entities.Junctions.DayOff", b =>
@@ -215,25 +219,17 @@ namespace Data.Migrations
                     b.ToTable("DayOff");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Junctions.TreatmentHairDresser", b =>
+            modelBuilder.Entity("Domain.Entities.Junctions.TreatmentPerformer", b =>
                 {
-                    b.Property<int>("HairDresserId");
+                    b.Property<int>("EmployeeId");
 
                     b.Property<int>("TreatmentId");
 
-                    b.Property<int?>("HairDresserCompanyId");
-
-                    b.Property<int?>("HairDresserEmploymentNumber");
-
-                    b.Property<string>("HairDresserSocialSecurityNumber");
-
-                    b.HasKey("HairDresserId", "TreatmentId");
+                    b.HasKey("EmployeeId", "TreatmentId");
 
                     b.HasIndex("TreatmentId");
 
-                    b.HasIndex("HairDresserEmploymentNumber", "HairDresserCompanyId", "HairDresserSocialSecurityNumber");
-
-                    b.ToTable("TreatmentHairDresser");
+                    b.ToTable("TreatmentPerformer");
                 });
 
             modelBuilder.Entity("Domain.Entities.ScheduleObjects.Schedule", b =>
@@ -241,17 +237,11 @@ namespace Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<int?>("EmployeeCompanyId");
-
-                    b.Property<int?>("EmployeeEmploymentNumber");
-
                     b.Property<int?>("EmployeeId");
-
-                    b.Property<string>("EmployeeSocialSecurityNumber");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("EmployeeEmploymentNumber", "EmployeeCompanyId", "EmployeeSocialSecurityNumber");
+                    b.HasIndex("EmployeeId");
 
                     b.ToTable("Schedules");
                 });
@@ -334,12 +324,6 @@ namespace Data.Migrations
 
                     b.Property<int>("CompanyId");
 
-                    b.Property<int?>("HairDresserCompanyId");
-
-                    b.Property<int?>("HairDresserEmploymentNumber");
-
-                    b.Property<string>("HairDresserSocialSecurityNumber");
-
                     b.Property<string>("Notes")
                         .HasMaxLength(256);
 
@@ -353,8 +337,6 @@ namespace Data.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.HasIndex("HairDresserEmploymentNumber", "HairDresserCompanyId", "HairDresserSocialSecurityNumber");
-
                     b.ToTable("Treatment");
                 });
 
@@ -365,27 +347,20 @@ namespace Data.Migrations
                         .HasForeignKey("CostumerId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Domain.Entities.Structs.TimeRange", "ExtraTime")
+                    b.HasOne("Domain.Entities.Employee", "Performer")
                         .WithMany()
-                        .HasForeignKey("ExtraTimeId");
+                        .HasForeignKey("PerformerId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Domain.Entities.ScheduleObjects.Schedule", "Schedule")
                         .WithMany("Bookings")
                         .HasForeignKey("ScheduleId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Domain.Entities.Structs.TimeRange", "TotalTime")
-                        .WithMany()
-                        .HasForeignKey("TotalTimeId");
-
                     b.HasOne("Domain.Entities.Treatment", "Treatment")
                         .WithMany()
                         .HasForeignKey("TreatmentId")
                         .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Domain.Entities.HairDresser", "Performer")
-                        .WithMany()
-                        .HasForeignKey("PerformerEmploymentNumber", "PerformerCompanyId", "PerformerSocialSecurityNumber");
                 });
 
             modelBuilder.Entity("Domain.Entities.Company", b =>
@@ -409,7 +384,7 @@ namespace Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Domain.Entities.HairDresser", b =>
+            modelBuilder.Entity("Domain.Entities.Employee", b =>
                 {
                     b.HasOne("Domain.Entities.Address", "Address")
                         .WithMany()
@@ -422,6 +397,19 @@ namespace Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
+            modelBuilder.Entity("Domain.Entities.Junctions.BookingManagement", b =>
+                {
+                    b.HasOne("Domain.Entities.Booking", "Booking")
+                        .WithMany()
+                        .HasForeignKey("BookingId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("Domain.Entities.Employee", "HairDresser")
+                        .WithMany()
+                        .HasForeignKey("HairDresserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
             modelBuilder.Entity("Domain.Entities.Junctions.DayOff", b =>
                 {
                     b.HasOne("Domain.Entities.ScheduleObjects.ScheduleBaseSettings", "ScheduleBaseSettings")
@@ -430,23 +418,24 @@ namespace Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("Domain.Entities.Junctions.TreatmentHairDresser", b =>
+            modelBuilder.Entity("Domain.Entities.Junctions.TreatmentPerformer", b =>
                 {
-                    b.HasOne("Domain.Entities.Treatment", "Treatment")
-                        .WithMany("WorkLoad")
-                        .HasForeignKey("TreatmentId")
+                    b.HasOne("Domain.Entities.Employee", "Employee")
+                        .WithMany("Treatments")
+                        .HasForeignKey("EmployeeId")
                         .OnDelete(DeleteBehavior.Cascade);
 
-                    b.HasOne("Domain.Entities.HairDresser", "HairDresser")
-                        .WithMany()
-                        .HasForeignKey("HairDresserEmploymentNumber", "HairDresserCompanyId", "HairDresserSocialSecurityNumber");
+                    b.HasOne("Domain.Entities.Treatment", "Treatment")
+                        .WithMany("Performers")
+                        .HasForeignKey("TreatmentId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Domain.Entities.ScheduleObjects.Schedule", b =>
                 {
-                    b.HasOne("Domain.Entities.HairDresser", "Employee")
+                    b.HasOne("Domain.Entities.Employee", "Employee")
                         .WithMany()
-                        .HasForeignKey("EmployeeEmploymentNumber", "EmployeeCompanyId", "EmployeeSocialSecurityNumber");
+                        .HasForeignKey("EmployeeId");
                 });
 
             modelBuilder.Entity("Domain.Entities.ScheduleObjects.ScheduleBaseSettings", b =>
@@ -492,10 +481,6 @@ namespace Data.Migrations
                         .WithMany("Treatments")
                         .HasForeignKey("CompanyId")
                         .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("Domain.Entities.HairDresser")
-                        .WithMany("Treatments")
-                        .HasForeignKey("HairDresserEmploymentNumber", "HairDresserCompanyId", "HairDresserSocialSecurityNumber");
                 });
         }
     }

@@ -12,7 +12,7 @@ namespace Domain.Entities.ScheduleObjects
         public int WorkHoursId { get; set; }
         public TimeRange Lunch { get; set; }
         public int LunchId { get; set; }
-        public IEnumerable<DayOff> DaysOff { get; set; } = new HashSet<DayOff>();
+        public IEnumerable<DayOff> DaysOff { get; private set; } = new HashSet<DayOff>();
 
         public int ScheduleId { get; set; }
         public Schedule Schedule { get; set; }

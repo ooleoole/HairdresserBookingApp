@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Domain.Entities;
+using Domain.Entities.Junctions;
 
 namespace Domain.Interfaces
 {
@@ -9,7 +10,7 @@ namespace Domain.Interfaces
         Company Employment { get; set; }
         int EmploymentNumber { get; set; }
         
-        IEnumerable<Treatment> Treatments { get; set; }
+        IEnumerable<TreatmentPerformer> Treatments { get; set; }
         
     }
 }

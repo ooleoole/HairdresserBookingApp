@@ -7,6 +7,6 @@
         public string ZipCode { get; set; }
         public string Co { get; set; }
 
-
+        //TODO:Validation
     }
 }

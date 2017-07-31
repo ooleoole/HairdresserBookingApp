@@ -8,5 +8,9 @@ namespace Domain.Entities.Junctions
         public DayOfWeek WeekDay { get; set; }
         public ScheduleBaseSettings ScheduleBaseSettings { get; set; }
         public int ScheduleBaseSettingsId { get; set; }
+
+        private DayOff()
+        {
+        }
     }
 }

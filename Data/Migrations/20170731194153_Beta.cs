@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Data.Migrations
 {
-    public partial class ola8 : Migration
+    public partial class Beta : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -32,7 +32,7 @@ namespace Data.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     AddressId = table.Column<int>(nullable: false),
-                    Email = table.Column<string>(nullable: false),
+                    Email = table.Column<string>(maxLength: 50, nullable: false),
                     Name = table.Column<string>(maxLength: 50, nullable: false),
                     PhoneNumber = table.Column<string>(maxLength: 11, nullable: false)
                 },
@@ -56,8 +56,8 @@ namespace Data.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     AddressId = table.Column<int>(nullable: false),
                     CompanyId = table.Column<int>(nullable: false),
-                    Email = table.Column<string>(nullable: false),
-                    FirstName = table.Column<string>(nullable: false),
+                    Email = table.Column<string>(maxLength: 50, nullable: true),
+                    FirstName = table.Column<string>(maxLength: 36, nullable: false),
                     Gender = table.Column<int>(nullable: false),
                     LastName = table.Column<string>(maxLength: 36, nullable: false),
                     Notes = table.Column<string>(maxLength: 256, nullable: true),
@@ -67,7 +67,6 @@ namespace Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Costumers", x => x.Id);
-                    table.UniqueConstraint("AK_Costumers_Email", x => x.Email);
                     table.UniqueConstraint("AK_Costumers_FirstName_LastName_AddressId_CompanyId", x => new { x.FirstName, x.LastName, x.AddressId, x.CompanyId });
                     table.ForeignKey(
                         name: "FK_Costumers_Addresses_AddressId",
@@ -89,17 +88,18 @@ namespace Data.Migrations
                 {
                     EmploymentNumber = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CompanyId = table.Column<int>(nullable: false),
-                    SocialSecurityNumber = table.Column<string>(maxLength: 13, nullable: false),
                     AddressId = table.Column<int>(nullable: false),
+                    CompanyId = table.Column<int>(nullable: false),
                     Email = table.Column<string>(maxLength: 56, nullable: false),
                     FirstName = table.Column<string>(maxLength: 36, nullable: false),
                     LastName = table.Column<string>(maxLength: 36, nullable: false),
-                    PhoneNumber = table.Column<string>(maxLength: 11, nullable: false)
+                    PhoneNumber = table.Column<string>(maxLength: 11, nullable: false),
+                    SocialSecurityNumber = table.Column<string>(maxLength: 13, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Employees", x => new { x.EmploymentNumber, x.CompanyId, x.SocialSecurityNumber });
+                    table.PrimaryKey("PK_Employees", x => x.EmploymentNumber);
+                    table.UniqueConstraint("AK_Employees_EmploymentNumber_CompanyId_SocialSecurityNumber", x => new { x.EmploymentNumber, x.CompanyId, x.SocialSecurityNumber });
                     table.ForeignKey(
                         name: "FK_Employees_Addresses_AddressId",
                         column: x => x.AddressId,
@@ -115,48 +115,116 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Treatment",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    BasePrice = table.Column<int>(nullable: false),
+                    BaseTime = table.Column<TimeSpan>(nullable: false),
+                    CompanyId = table.Column<int>(nullable: false),
+                    Notes = table.Column<string>(maxLength: 256, nullable: true),
+                    Type = table.Column<string>(maxLength: 96, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Treatment", x => x.Id);
+                    table.UniqueConstraint("AK_Treatment_Type_CompanyId", x => new { x.Type, x.CompanyId });
+                    table.ForeignKey(
+                        name: "FK_Treatment_Companies_CompanyId",
+                        column: x => x.CompanyId,
+                        principalTable: "Companies",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Schedules",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    EmployeeCompanyId = table.Column<int>(nullable: true),
-                    EmployeeEmploymentNumber = table.Column<int>(nullable: true),
-                    EmployeeId = table.Column<int>(nullable: true),
-                    EmployeeSocialSecurityNumber = table.Column<string>(nullable: true)
+                    EmployeeId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Schedules", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Schedules_Employees_EmployeeEmploymentNumber_EmployeeCompanyId_EmployeeSocialSecurityNumber",
-                        columns: x => new { x.EmployeeEmploymentNumber, x.EmployeeCompanyId, x.EmployeeSocialSecurityNumber },
+                        name: "FK_Schedules_Employees_EmployeeId",
+                        column: x => x.EmployeeId,
                         principalTable: "Employees",
-                        principalColumns: new[] { "EmploymentNumber", "CompanyId", "SocialSecurityNumber" },
+                        principalColumn: "EmploymentNumber",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Skills",
+                name: "TreatmentPerformer",
+                columns: table => new
+                {
+                    EmployeeId = table.Column<int>(nullable: false),
+                    TreatmentId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TreatmentPerformer", x => new { x.EmployeeId, x.TreatmentId });
+                    table.ForeignKey(
+                        name: "FK_TreatmentPerformer_Employees_EmployeeId",
+                        column: x => x.EmployeeId,
+                        principalTable: "Employees",
+                        principalColumn: "EmploymentNumber",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TreatmentPerformer_Treatment_TreatmentId",
+                        column: x => x.TreatmentId,
+                        principalTable: "Treatment",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Bookings",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    MasterCompanyId = table.Column<int>(nullable: true),
-                    MasterEmploymentNumber = table.Column<int>(nullable: true),
-                    MasterId = table.Column<int>(nullable: false),
-                    MasterSocialSecurityNumber = table.Column<string>(nullable: true),
-                    Type = table.Column<string>(maxLength: 96, nullable: false)
+                    CostumerId = table.Column<int>(nullable: false),
+                    DateAndTime = table.Column<DateTime>(nullable: false),
+                    EmployeeIsNotified = table.Column<bool>(nullable: false),
+                    ExtraCost = table.Column<int>(nullable: false),
+                    ExtraTime = table.Column<TimeSpan>(nullable: false),
+                    IsCancelled = table.Column<bool>(nullable: false),
+                    Notes = table.Column<string>(maxLength: 256, nullable: true),
+                    PerformerId = table.Column<int>(nullable: false),
+                    ScheduleId = table.Column<int>(nullable: false),
+                    TreatmentId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Skills", x => x.Id);
-                    table.UniqueConstraint("AK_Skills_Type_MasterId", x => new { x.Type, x.MasterId });
+                    table.PrimaryKey("PK_Bookings", x => x.Id);
+                    table.UniqueConstraint("AK_Bookings_TreatmentId_CostumerId_DateAndTime", x => new { x.TreatmentId, x.CostumerId, x.DateAndTime });
                     table.ForeignKey(
-                        name: "FK_Skills_Employees_MasterEmploymentNumber_MasterCompanyId_MasterSocialSecurityNumber",
-                        columns: x => new { x.MasterEmploymentNumber, x.MasterCompanyId, x.MasterSocialSecurityNumber },
+                        name: "FK_Bookings_Costumers_CostumerId",
+                        column: x => x.CostumerId,
+                        principalTable: "Costumers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Bookings_Employees_PerformerId",
+                        column: x => x.PerformerId,
                         principalTable: "Employees",
-                        principalColumns: new[] { "EmploymentNumber", "CompanyId", "SocialSecurityNumber" },
+                        principalColumn: "EmploymentNumber",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Bookings_Schedules_ScheduleId",
+                        column: x => x.ScheduleId,
+                        principalTable: "Schedules",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Bookings_Treatment_TreatmentId",
+                        column: x => x.TreatmentId,
+                        principalTable: "Treatment",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -189,42 +257,27 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Treatment",
+                name: "BookingManagement",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    BasePrice = table.Column<int>(nullable: false),
-                    BaseTime = table.Column<TimeSpan>(nullable: false),
-                    CompanyId = table.Column<int>(nullable: false),
-                    HairDresserCompanyId = table.Column<int>(nullable: true),
-                    HairDresserEmploymentNumber = table.Column<int>(nullable: true),
-                    HairDresserSocialSecurityNumber = table.Column<string>(nullable: true),
-                    Notes = table.Column<string>(maxLength: 256, nullable: true),
-                    SkillId = table.Column<int>(nullable: true),
-                    Type = table.Column<string>(maxLength: 96, nullable: false)
+                    BookingId = table.Column<int>(nullable: false),
+                    HairDresserId = table.Column<int>(nullable: false),
+                    Action = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Treatment", x => x.Id);
-                    table.UniqueConstraint("AK_Treatment_Type_CompanyId", x => new { x.Type, x.CompanyId });
+                    table.PrimaryKey("PK_BookingManagement", x => new { x.BookingId, x.HairDresserId, x.Action });
                     table.ForeignKey(
-                        name: "FK_Treatment_Companies_CompanyId",
-                        column: x => x.CompanyId,
-                        principalTable: "Companies",
+                        name: "FK_BookingManagement_Bookings_BookingId",
+                        column: x => x.BookingId,
+                        principalTable: "Bookings",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Treatment_Skills_SkillId",
-                        column: x => x.SkillId,
-                        principalTable: "Skills",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Treatment_Employees_HairDresserEmploymentNumber_HairDresserCompanyId_HairDresserSocialSecurityNumber",
-                        columns: x => new { x.HairDresserEmploymentNumber, x.HairDresserCompanyId, x.HairDresserSocialSecurityNumber },
+                        name: "FK_BookingManagement_Employees_HairDresserId",
+                        column: x => x.HairDresserId,
                         principalTable: "Employees",
-                        principalColumns: new[] { "EmploymentNumber", "CompanyId", "SocialSecurityNumber" },
+                        principalColumn: "EmploymentNumber",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -247,97 +300,6 @@ namespace Data.Migrations
                         principalTable: "DateBoundTimeRangeses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "TreatmentHairDresser",
-                columns: table => new
-                {
-                    HairDresserId = table.Column<int>(nullable: false),
-                    TreatmentId = table.Column<int>(nullable: false),
-                    HairDresserCompanyId = table.Column<int>(nullable: true),
-                    HairDresserEmploymentNumber = table.Column<int>(nullable: true),
-                    HairDresserSocialSecurityNumber = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_TreatmentHairDresser", x => new { x.HairDresserId, x.TreatmentId });
-                    table.ForeignKey(
-                        name: "FK_TreatmentHairDresser_Treatment_TreatmentId",
-                        column: x => x.TreatmentId,
-                        principalTable: "Treatment",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_TreatmentHairDresser_Employees_HairDresserEmploymentNumber_HairDresserCompanyId_HairDresserSocialSecurityNumber",
-                        columns: x => new { x.HairDresserEmploymentNumber, x.HairDresserCompanyId, x.HairDresserSocialSecurityNumber },
-                        principalTable: "Employees",
-                        principalColumns: new[] { "EmploymentNumber", "CompanyId", "SocialSecurityNumber" },
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Bookings",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    CostumerId = table.Column<int>(nullable: false),
-                    DateAndTime = table.Column<DateTime>(nullable: false),
-                    EmployeeIsNotified = table.Column<bool>(nullable: false),
-                    ExtraCost = table.Column<int>(nullable: false),
-                    ExtraTimeId = table.Column<int>(nullable: true),
-                    IsCancelled = table.Column<bool>(nullable: false),
-                    Notes = table.Column<string>(maxLength: 256, nullable: true),
-                    PerformerCompanyId = table.Column<int>(nullable: true),
-                    PerformerEmploymentNumber = table.Column<int>(nullable: true),
-                    PerformerId = table.Column<int>(nullable: false),
-                    PerformerSocialSecurityNumber = table.Column<string>(nullable: true),
-                    ScheduleId = table.Column<int>(nullable: false),
-                    TotalPrice = table.Column<int>(nullable: false),
-                    TotalTimeId = table.Column<int>(nullable: true),
-                    TreatmentId = table.Column<int>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Bookings", x => x.Id);
-                    table.UniqueConstraint("AK_Bookings_TreatmentId_CostumerId_DateAndTime", x => new { x.TreatmentId, x.CostumerId, x.DateAndTime });
-                    table.ForeignKey(
-                        name: "FK_Bookings_Costumers_CostumerId",
-                        column: x => x.CostumerId,
-                        principalTable: "Costumers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Bookings_TimeRange_ExtraTimeId",
-                        column: x => x.ExtraTimeId,
-                        principalTable: "TimeRange",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Bookings_Schedules_ScheduleId",
-                        column: x => x.ScheduleId,
-                        principalTable: "Schedules",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Bookings_TimeRange_TotalTimeId",
-                        column: x => x.TotalTimeId,
-                        principalTable: "TimeRange",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Bookings_Treatment_TreatmentId",
-                        column: x => x.TreatmentId,
-                        principalTable: "Treatment",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Bookings_Employees_PerformerEmploymentNumber_PerformerCompanyId_PerformerSocialSecurityNumber",
-                        columns: x => new { x.PerformerEmploymentNumber, x.PerformerCompanyId, x.PerformerSocialSecurityNumber },
-                        principalTable: "Employees",
-                        principalColumns: new[] { "EmploymentNumber", "CompanyId", "SocialSecurityNumber" },
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -397,24 +359,14 @@ namespace Data.Migrations
                 column: "CostumerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Bookings_ExtraTimeId",
+                name: "IX_Bookings_PerformerId",
                 table: "Bookings",
-                column: "ExtraTimeId");
+                column: "PerformerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bookings_ScheduleId",
                 table: "Bookings",
                 column: "ScheduleId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Bookings_TotalTimeId",
-                table: "Bookings",
-                column: "TotalTimeId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Bookings_PerformerEmploymentNumber_PerformerCompanyId_PerformerSocialSecurityNumber",
-                table: "Bookings",
-                columns: new[] { "PerformerEmploymentNumber", "PerformerCompanyId", "PerformerSocialSecurityNumber" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Companies_AddressId",
@@ -442,19 +394,19 @@ namespace Data.Migrations
                 column: "CompanyId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TreatmentHairDresser_TreatmentId",
-                table: "TreatmentHairDresser",
+                name: "IX_BookingManagement_HairDresserId",
+                table: "BookingManagement",
+                column: "HairDresserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TreatmentPerformer_TreatmentId",
+                table: "TreatmentPerformer",
                 column: "TreatmentId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_TreatmentHairDresser_HairDresserEmploymentNumber_HairDresserCompanyId_HairDresserSocialSecurityNumber",
-                table: "TreatmentHairDresser",
-                columns: new[] { "HairDresserEmploymentNumber", "HairDresserCompanyId", "HairDresserSocialSecurityNumber" });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Schedules_EmployeeEmploymentNumber_EmployeeCompanyId_EmployeeSocialSecurityNumber",
+                name: "IX_Schedules_EmployeeId",
                 table: "Schedules",
-                columns: new[] { "EmployeeEmploymentNumber", "EmployeeCompanyId", "EmployeeSocialSecurityNumber" });
+                column: "EmployeeId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ScheduleBaseSettingses_LunchId",
@@ -471,11 +423,6 @@ namespace Data.Migrations
                 name: "IX_ScheduleBaseSettingses_WorkHoursId",
                 table: "ScheduleBaseSettingses",
                 column: "WorkHoursId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Skills_MasterEmploymentNumber_MasterCompanyId_MasterSocialSecurityNumber",
-                table: "Skills",
-                columns: new[] { "MasterEmploymentNumber", "MasterCompanyId", "MasterSocialSecurityNumber" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_DateBoundTimeRangeses_DisabledHoursScheduleId",
@@ -496,43 +443,33 @@ namespace Data.Migrations
                 name: "IX_Treatment_CompanyId",
                 table: "Treatment",
                 column: "CompanyId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Treatment_SkillId",
-                table: "Treatment",
-                column: "SkillId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Treatment_HairDresserEmploymentNumber_HairDresserCompanyId_HairDresserSocialSecurityNumber",
-                table: "Treatment",
-                columns: new[] { "HairDresserEmploymentNumber", "HairDresserCompanyId", "HairDresserSocialSecurityNumber" });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Bookings");
+                name: "BookingManagement");
 
             migrationBuilder.DropTable(
                 name: "DayOff");
 
             migrationBuilder.DropTable(
-                name: "TreatmentHairDresser");
+                name: "TreatmentPerformer");
 
             migrationBuilder.DropTable(
-                name: "Costumers");
+                name: "Bookings");
 
             migrationBuilder.DropTable(
                 name: "ScheduleBaseSettingses");
+
+            migrationBuilder.DropTable(
+                name: "Costumers");
 
             migrationBuilder.DropTable(
                 name: "Treatment");
 
             migrationBuilder.DropTable(
                 name: "TimeRange");
-
-            migrationBuilder.DropTable(
-                name: "Skills");
 
             migrationBuilder.DropTable(
                 name: "DateBoundTimeRangeses");

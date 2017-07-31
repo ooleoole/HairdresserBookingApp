@@ -61,9 +61,9 @@ namespace Playground
             };
             booking.DateAndTime = DateTime.Now;
             booking.ExtraCost = 0;
-            booking.TotalTime = time2;
+            
             booking.Schedule = ttt;
-            booking.TotalPrice = 300;
+           
             booking.Treatment = new Treatment()
             {
                 BasePrice = 45,
