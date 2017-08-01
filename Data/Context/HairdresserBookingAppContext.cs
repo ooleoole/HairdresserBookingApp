@@ -29,7 +29,7 @@ namespace Data.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            
+
             MapConfiguration.Map(modelBuilder.Entity<DateBoundTimeRanges>());
             MapConfiguration.Map(modelBuilder.Entity<DayOff>());
             MapConfiguration.Map(modelBuilder.Entity<TreatmentPerformer>());
@@ -42,7 +42,8 @@ namespace Data.Context
             MapConfiguration.Map(modelBuilder.Entity<Company>());
             MapConfiguration.Map(modelBuilder.Entity<Treatment>());
             MapConfiguration.Map(modelBuilder.Entity<Costumer>());
-
+            MapConfiguration.Map(modelBuilder.Entity<ScheduleBaseSettings>());
+            MapConfiguration.Map(modelBuilder.Entity<Schedule>());
 
         }
     }

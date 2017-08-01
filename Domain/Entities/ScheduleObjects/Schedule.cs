@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using Domain.Entities.Structs;
 
 namespace Domain.Entities.ScheduleObjects
@@ -17,8 +18,8 @@ namespace Domain.Entities.ScheduleObjects
         { get; private set; } = new HashSet<Booking>();
 
         public ScheduleBaseSettings ScheduleBaseSettings { get; set; }
-        public int? EmployeeId { get; set; }
-        public Employee Employee { get; set; }
+        public int ScheduleBaseSettingsId { get; set; }
+      
 
 
         public Schedule()

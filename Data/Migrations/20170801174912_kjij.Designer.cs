@@ -9,9 +9,10 @@ using Domain.Enums;
 namespace Data.Migrations
 {
     [DbContext(typeof(HairdresserBookingAppContext))]
-    partial class HairdresserBookingAppContextModelSnapshot : ModelSnapshot
+    [Migration("20170801174912_kjij")]
+    partial class kjij
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
@@ -145,8 +146,7 @@ namespace Data.Migrations
 
                     b.HasAlternateKey("FirstName", "LastName", "AddressId", "CompanyId");
 
-                    b.HasIndex("AddressId")
-                        .IsUnique();
+                    b.HasIndex("AddressId");
 
                     b.HasIndex("CompanyId");
 
@@ -189,8 +189,7 @@ namespace Data.Migrations
 
                     b.HasAlternateKey("EmploymentNumber", "CompanyId", "SocialSecurityNumber");
 
-                    b.HasIndex("AddressId")
-                        .IsUnique();
+                    b.HasIndex("AddressId");
 
                     b.HasIndex("CompanyId");
 
@@ -242,15 +241,13 @@ namespace Data.Migrations
             modelBuilder.Entity("Domain.Entities.ScheduleObjects.Schedule", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .ValueGeneratedOnAdd();
 
                     b.Property<int>("ScheduleBaseSettingsId");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ScheduleBaseSettingsId")
-                        .IsUnique();
+                    b.HasIndex("ScheduleBaseSettingsId");
 
                     b.ToTable("Schedules");
                 });
@@ -267,11 +264,9 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("LunchId")
-                        .IsUnique();
+                    b.HasIndex("LunchId");
 
-                    b.HasIndex("WorkHoursId")
-                        .IsUnique();
+                    b.HasIndex("WorkHoursId");
 
                     b.ToTable("ScheduleBaseSettingses");
                 });
@@ -381,8 +376,8 @@ namespace Data.Migrations
             modelBuilder.Entity("Domain.Entities.Costumer", b =>
                 {
                     b.HasOne("Domain.Entities.Address", "Address")
-                        .WithOne()
-                        .HasForeignKey("Domain.Entities.Costumer", "AddressId")
+                        .WithMany()
+                        .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Domain.Entities.Company", "Company")
@@ -394,8 +389,8 @@ namespace Data.Migrations
             modelBuilder.Entity("Domain.Entities.Employee", b =>
                 {
                     b.HasOne("Domain.Entities.Address", "Address")
-                        .WithOne()
-                        .HasForeignKey("Domain.Entities.Employee", "AddressId")
+                        .WithMany()
+                        .HasForeignKey("AddressId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Domain.Entities.Company", "Employment")
@@ -446,21 +441,21 @@ namespace Data.Migrations
             modelBuilder.Entity("Domain.Entities.ScheduleObjects.Schedule", b =>
                 {
                     b.HasOne("Domain.Entities.ScheduleObjects.ScheduleBaseSettings", "ScheduleBaseSettings")
-                        .WithOne()
-                        .HasForeignKey("Domain.Entities.ScheduleObjects.Schedule", "ScheduleBaseSettingsId")
+                        .WithMany()
+                        .HasForeignKey("ScheduleBaseSettingsId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Domain.Entities.ScheduleObjects.ScheduleBaseSettings", b =>
                 {
                     b.HasOne("Domain.Entities.Structs.TimeRange", "Lunch")
-                        .WithOne()
-                        .HasForeignKey("Domain.Entities.ScheduleObjects.ScheduleBaseSettings", "LunchId")
+                        .WithMany()
+                        .HasForeignKey("LunchId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Domain.Entities.Structs.TimeRange", "WorkHours")
-                        .WithOne()
-                        .HasForeignKey("Domain.Entities.ScheduleObjects.ScheduleBaseSettings", "WorkHoursId")
+                        .WithMany()
+                        .HasForeignKey("WorkHoursId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

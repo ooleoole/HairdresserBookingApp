@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Domain.Entities.Junctions;
+using Domain.Entities.ScheduleObjects;
 using Domain.Interfaces;
 
 namespace Domain.Entities
@@ -20,6 +21,9 @@ namespace Domain.Entities
         public int? CompanyId { get; set; }
         public Company Employment { get; set; }
         public IEnumerable<TreatmentPerformer> Treatments { get; set; }
+
+        public int? ScheduleId { get; set; }
+        public Schedule Schedule { get; set; }
 
 
     }

@@ -1,5 +1,4 @@
-﻿using System;
-using Domain.Entities;
+﻿using Domain.Entities;
 using Domain.Entities.Junctions;
 using Domain.Entities.ScheduleObjects;
 using Domain.Entities.Structs;
@@ -14,12 +13,15 @@ namespace Data.EntityConfigurations
         public static void Map(EntityTypeBuilder<Employee> entityTypeBuilder)
         {
             entityTypeBuilder.HasKey(p => p.EmploymentNumber);
+            entityTypeBuilder.HasOne(p => p.Schedule).WithOne().OnDelete(DeleteBehavior.Cascade);
+            entityTypeBuilder.HasOne(p => p.Address).WithOne().OnDelete(DeleteBehavior.Cascade);
             entityTypeBuilder.HasAlternateKey(p => new { p.EmploymentNumber, p.CompanyId, p.SocialSecurityNumber });
             entityTypeBuilder.Property(p => p.FirstName).IsRequired().HasMaxLength(36);
             entityTypeBuilder.Property(p => p.LastName).IsRequired().HasMaxLength(36);
             entityTypeBuilder.Property(p => p.PhoneNumber).IsRequired().HasMaxLength(11);
             entityTypeBuilder.Property(p => p.Email).IsRequired().HasMaxLength(56);
             entityTypeBuilder.Property(p => p.SocialSecurityNumber).IsRequired().HasMaxLength(13);
+
 
 
         }
@@ -40,18 +42,20 @@ namespace Data.EntityConfigurations
             entityTypeBuilder.HasMany(p => p.DisabledHours).WithOne().OnDelete(DeleteBehavior.Restrict);
             entityTypeBuilder.HasMany(p => p.NoneStandardAvailableHours)
                 .WithOne().OnDelete(DeleteBehavior.Restrict);
+            entityTypeBuilder.HasOne(p => p.ScheduleBaseSettings).WithOne().OnDelete(DeleteBehavior.Cascade);
+
         }
 
         public static void Map(EntityTypeBuilder<ScheduleBaseSettings> entityTypeBuilder)
         {
-
-
+            ConfigureShadowId(entityTypeBuilder);
+            entityTypeBuilder.HasOne(p => p.Lunch).WithOne().OnDelete(DeleteBehavior.Cascade);
+            entityTypeBuilder.HasOne(p => p.WorkHours).WithOne().OnDelete(DeleteBehavior.Cascade);
         }
 
         public static void Map(EntityTypeBuilder<DayOff> entityTypeBuilder)
         {
             entityTypeBuilder.HasKey(p => new { p.ScheduleBaseSettingsId, p.WeekDay });
-            //entityTypeBuilder.HasOne(p => p.WeekDay).WithMany().HasForeignKey(p => p.WeekDay);
 
         }
 
@@ -67,7 +71,6 @@ namespace Data.EntityConfigurations
             entityTypeBuilder.HasAlternateKey(b => new { b.TreatmentId, b.CostumerId, b.DateAndTime });
             entityTypeBuilder.Property(p => p.DateAndTime).IsRequired();
             entityTypeBuilder.Property(p => p.Notes).HasMaxLength(256);
-
 
         }
         public static void Map(EntityTypeBuilder<TimeRange> entityTypeBuilder)
@@ -87,14 +90,11 @@ namespace Data.EntityConfigurations
 
         }
 
-        private static void ConfigureShadowId(EntityTypeBuilder entityTypeBuilder)
-        {
-            entityTypeBuilder.Property<int>("Id").UseSqlServerIdentityColumn();
-            entityTypeBuilder.HasKey("Id");
-        }
+
         public static void Map(EntityTypeBuilder<Costumer> entityTypeBuilder)
         {
             entityTypeBuilder.HasAlternateKey(c => new { c.FirstName, c.LastName, c.AddressId, c.CompanyId });
+            entityTypeBuilder.HasOne(p => p.Address).WithOne().OnDelete(DeleteBehavior.Cascade);
             entityTypeBuilder.Property(p => p.FirstName).HasMaxLength(36).IsRequired();
             entityTypeBuilder.Property(p => p.LastName).HasMaxLength(36).IsRequired();
             entityTypeBuilder.Property(p => p.Email).HasMaxLength(50);
@@ -128,7 +128,11 @@ namespace Data.EntityConfigurations
 
         }
 
-
+        private static void ConfigureShadowId(EntityTypeBuilder entityTypeBuilder)
+        {
+            entityTypeBuilder.Property<int>("Id").UseSqlServerIdentityColumn();
+            entityTypeBuilder.HasKey("Id");
+        }
 
     }
 }

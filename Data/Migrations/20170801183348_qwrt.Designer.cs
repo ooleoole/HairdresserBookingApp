@@ -9,9 +9,10 @@ using Domain.Enums;
 namespace Data.Migrations
 {
     [DbContext(typeof(HairdresserBookingAppContext))]
-    partial class HairdresserBookingAppContextModelSnapshot : ModelSnapshot
+    [Migration("20170801183348_qwrt")]
+    partial class qwrt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.2")
