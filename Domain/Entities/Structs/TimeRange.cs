@@ -7,7 +7,7 @@ namespace Domain.Entities.Structs
     {
         private TimeSpan _duration;
 
-        public TimeSpan StartTime { get; set; }
+        public TimeSpan StartTime { get;  set; }
         public TimeSpan EndTime => StartTime + Duration;
         public TimeSpan Duration
         {
@@ -46,9 +46,10 @@ namespace Domain.Entities.Structs
 
         public override bool Equals(object obj)
         {
-            if (obj is TimeRange)
+            var range = obj as TimeRange;
+            if (range != null)
             {
-                var timeRange = (TimeRange)obj;
+                var timeRange = range;
                 return StartTime == timeRange.StartTime && Duration == timeRange.Duration;
             }
             return false;
