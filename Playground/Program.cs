@@ -83,11 +83,13 @@ namespace Playground
 
             workingHours.AddTimeRange(time2).AddTimeRange(time1).AddTimeRange(time3).AddTimeRange(time4).AddTimeRange(time5).AddTimeRange(time6).RemoveTimeRange(time7);
             ttt.NoneStandardAvailableHours.Add(workingHours);
-
+            Console.WriteLine(booking.ExtraTime);
+            
+            db.Schedules.Add(ttt);
             //db.Schedules.Add(ttt);
             //db.Schedules.Add(ttt);
-            //db.Schedules.Add(ttt);
-            foreach (var sc in db.Bookings.Include(p => p.ExtraTime).Include(p => p.Treatment).Include(p=>p.Schedule))
+            
+            foreach (var sc in db.Bookings.Include(p => p.Treatment).Include(p=>p.Schedule))
             {
                 db.Bookings.Remove(sc);
             }
