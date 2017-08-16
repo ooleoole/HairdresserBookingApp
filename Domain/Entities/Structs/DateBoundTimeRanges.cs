@@ -7,7 +7,7 @@ namespace Domain.Entities.Structs
 {
     public class DateBoundTimeRanges : IDateBoundTimeRanges
     {
-        public DateTime Date { get; set; }
+        public DateTime Date { get; private set; }
         public IEnumerable<TimeRange> TimeRanges { get; private set; } = new List<TimeRange>();
         public DayOfWeek Day { get; private set; }
 
@@ -62,8 +62,9 @@ namespace Domain.Entities.Structs
                 }
                 else if (TimeRangeCutsStartOfStoredTimeRange(timeRange, storedTimeRange))
                 {
-                    storedTimeRange.StartTime = timeRange.EndTime;
-                    timeRangesTemp[i] = storedTimeRange;
+                   // storedTimeRange.StartTime = timeRange.EndTime;
+                    var newTimeRange = new TimeRange(timeRange.EndTime,storedTimeRange.Duration);
+                    timeRangesTemp[i] = newTimeRange;
                 }
                 else if (TimeRangeCutsEndOfStoredTimeRange(timeRange, storedTimeRange))
                 {

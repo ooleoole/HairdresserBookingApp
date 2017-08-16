@@ -7,7 +7,7 @@ namespace Domain.Entities.Structs
     {
         private TimeSpan _duration;
 
-        public TimeSpan StartTime { get;  set; }
+        public TimeSpan StartTime { get;  private set; }
         public TimeSpan EndTime => StartTime + Duration;
         public TimeSpan Duration
         {

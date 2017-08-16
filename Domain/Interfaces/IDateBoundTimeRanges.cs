@@ -8,7 +8,7 @@ namespace Domain.Interfaces
     public interface IDateBoundTimeRanges
     {
         
-        DateTime Date { get; set; }
+        DateTime Date { get; }
         DayOfWeek Day { get; }
         IEnumerable<TimeRange> TimeRanges { get; }
 
